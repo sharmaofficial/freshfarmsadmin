@@ -51,29 +51,8 @@ import useLocalStorage from '../utils/localStorageHook';
 const { Content, Sider } = Layout;
 
 const MainContent = ({ children }) => {
-  const {isAuthenticated, user} = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const {data, deleteData, saveData, retrieveData} = useLocalStorage('user');
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("data", data);
-
-  useEffect(() => {
-    if(!isAuthenticated){
-      if(data){
-        dispatch({type: 'LOGIN', payload: data});
-      }
-    }
-  },[])
-
-  const handleLogout = () => {
-    dispatch({type: 'LOGOUT'});
-  };
-
-  if (!isAuthenticated) {
-    return <Navigate to="/auth/login" />;
-  }
-
   const toggleDrawer = () => {
     setDrawerVisible(!drawerVisible);
   };
@@ -89,9 +68,9 @@ const MainContent = ({ children }) => {
       <Layout>
         <Content style={{ padding: '24px', minHeight: 280 }}>
           <div>
-            <h2>Welcome, {user?.username}!</h2>
+            {/* <h2>Welcome, {user?.username}!</h2> */}
             {children}
-            <button onClick={handleLogout}>Logout</button>
+            {/* <button onClick={handleLogout}>Logout</button> */}
           </div>
         </Content>
       </Layout>

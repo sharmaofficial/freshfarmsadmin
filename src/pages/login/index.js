@@ -17,7 +17,6 @@ function Login() {
         if(!isAuthenticated){
             if(data){
                 dispatch({type: 'LOGIN', payload: data});
-                
             }
         }
     },[])
