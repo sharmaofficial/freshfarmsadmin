@@ -1,26 +1,30 @@
 import { Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatUsersDataForTable, getApiCall } from '../../utils';
+import { decryptToken, formatUsersDataForTable, getApiCall } from '../../utils';
+import useLocalStorage from '../../utils/localStorageHook';
 
 const Users = () => {
     const [loading, setLoading] = useState(false);
     const [userList, setUsersList] = useState([]);
     const [columns, setColumns] = useState([]);
+    const {userData} = useLocalStorage('user');
 
     useEffect(() => {
         getUsersList();
-    },[]);
+    },[userData]);
 
     async function getUsersList() {
         setLoading(true);
         try {
-            const response = await getApiCall();
-            const {data, status, message} = response.data;
-            if(status){
-                console.log("data", data);
-                const {columns, transformedArray} = formatUsersDataForTable(data);
-                setColumns(columns);
-                setUsersList(transformedArray);
+            if(userData){
+                // const response = await getApiCall("", decryptToken(user.token, 'freshfarms'));
+                const response = await getApiCall("", userData.token);
+                const {data, status, message} = response.data;
+                if(status){
+                    const {columns, transformedArray} = formatUsersDataForTable(data);
+                    setColumns(columns);
+                    setUsersList(transformedArray);
+                }
             }
             setLoading(false);
         } catch (error) {

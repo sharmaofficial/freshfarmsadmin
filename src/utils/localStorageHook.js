@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 
 const useLocalStorage = (key) => {
   const [data, setData] = useState(null);
-  console.log("key", key);
-  console.log("data", data);
 
   useEffect(() => {
     loadData();
@@ -41,7 +39,7 @@ const useLocalStorage = (key) => {
     }
   };
 
-  return { data, saveData, deleteData };
+  return { userData: data, saveData, deleteData };
 };
 
 export default useLocalStorage;
