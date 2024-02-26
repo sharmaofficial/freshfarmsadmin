@@ -1,4 +1,4 @@
-import { Button, Drawer, Layout, List, Modal, Table } from 'antd';
+import { Button, Drawer, Image, Layout, List, Modal, Switch, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { formatUsersDataForTable, getApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
@@ -33,14 +33,14 @@ const data = [
     },
 ];
 
-const Users = () => {
+const Package = () => {
     const [loading, setLoading] = useState(false);
     const [userList, setUsersList] = useState([]);
     const [columns, setColumns] = useState([]);
-    const {userData, deleteData} = useLocalStorage('user');
+    const {userData} = useLocalStorage('user');
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         getUsersList();
@@ -51,18 +51,20 @@ const Users = () => {
         try {
             if(userData){
                 // const response = await getApiCall("", decryptToken(user.token, 'freshfarms'));
-                const response = await getApiCall("", userData.token);
+                const response = await getApiCall("admin/getPackages", userData.token);
                 const {data, status, message} = response.data;
+                console.log(data);
+                console.log(message);
                 if(status){
                     const transformedArray = data.map((item, index) => ({
                         key: item._id,
                         id: item._id,
-                        name: item.data.name,
-                        email: item.data.email,
-                        mobile: item.data.mobile || "-",
-                        action: <>
-                            <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                            <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                        weigth: item.name,
+                        action:
+                        <>
+                            {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button> */}
+                            <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                            <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />
                         </>
                     }));                
                     const {columns} = formatUsersDataForTable(data);
@@ -76,6 +78,11 @@ const Users = () => {
             setLoading(false);
         }
     };
+
+    function handleCategoryStateChange(newStatus, categoryId) {
+        console.log("newStatus", newStatus);
+        console.log("categoryId", categoryId);
+    }
 
     const showDrawer = () => {
         setVisible(true);
@@ -93,14 +100,10 @@ const Users = () => {
         setSelectedUserToEdit(null);
     };
 
-    function logout() {
-        deleteData();
-    }
-
     return (
          <Layout>
-            <Modal title="Edit user" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
-                {selectedUserToEdit && <p>{selectedUserToEdit.data.name}</p>}
+            <Modal title="Edit package" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
+                {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>}
             </Modal>
              <Drawer
                 title="Fresh Farms Admin"
@@ -119,13 +122,31 @@ const Users = () => {
                     )}
                 />
             </Drawer>
-            <Header logout={logout} onDrawerOpen={showDrawer} />
+            <Header onDrawerOpen={showDrawer} />
             <Content>
                 <Table  
-                    title={() => 'Users'}
+                    title={() => 'Packages'}
                     loading={loading} 
                     dataSource={userList} 
-                    columns={columns} 
+                    columns={
+                        [
+                            {
+                              title: 'Id',
+                              dataIndex: 'id',
+                              key: 'id',
+                            },
+                            {
+                              title: 'Weigth',
+                              dataIndex: 'weigth',
+                              key: 'weigth',
+                            },
+                            {
+                              title: 'Action',
+                              dataIndex: 'action',
+                              key: 'action',
+                            },
+                        ]
+                    } 
                 />
             </Content>
          <Footer>
@@ -134,4 +155,4 @@ const Users = () => {
     );
 }
 
-export default Users;
+export default Package;
