@@ -2,6 +2,7 @@ import { Button, Card, Form, Input, Upload, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons';
 import { InboxOutlined } from '@ant-design/icons';
 import { useState } from 'react';
+import Title from 'antd/es/typography/Title';
 
 const AddCategory = ({onSubmit}) => {
     const { Dragger } = Upload;
@@ -41,7 +42,8 @@ const AddCategory = ({onSubmit}) => {
     }
 
     return(
-        <Card>
+        <Card style={{margin: 10}}>
+            <Title level={4} style={{marginBottom: 20}}>Add Category</Title>
             <Form name='Add Category'>
                 <Form.Item name="Name" label="Name">
                     <Input

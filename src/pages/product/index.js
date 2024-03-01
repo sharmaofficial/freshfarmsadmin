@@ -1,10 +1,11 @@
-import { Button, Drawer, Image, Layout, List, Modal, Switch, Table } from 'antd';
+import { Button, Drawer, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
+import AddProduct from '../Add Product';
 
 const data = [
     {
@@ -36,11 +37,14 @@ const data = [
 const Product = () => {
     const [loading, setLoading] = useState(false);
     const [userList, setUsersList] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [columns, setColumns] = useState([]);
     const {userData} = useLocalStorage('user');
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
+
 
     useEffect(() => {
         getUsersList();
@@ -54,9 +58,10 @@ const Product = () => {
                 const response = await getApiCall("admin/getProducts", userData.token);
                 const {data, status, message} = response.data;
                 console.log(data);
+                setCategories(data.categories)
                 console.log(message);
                 if(status){
-                    const transformedArray = data.map((item, index) => ({
+                    const transformedArray = data.products.map((item, index) => ({
                         key: item._id,
                         id: item._id,
                         name: item.name,
@@ -102,8 +107,29 @@ const Product = () => {
         setSelectedUserToEdit(null);
     };
 
+    async function handleAddProduct(formData) {
+        console.log("formData", formData);
+        try {
+            const response = await postApiCall("admin/addProduct", formData, userData.token);
+            const {data, message, status} = response.data;
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+                
+                //TODO: Api return the updated data row, use this instead of calling the api again
+                // setUsersList([...userList, data]);
+            }else{
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
     return (
          <Layout>
+            {contextHolder}
             <Modal title="Edit product" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
                 {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>}
             </Modal>
@@ -126,6 +152,7 @@ const Product = () => {
             </Drawer>
             <Header onDrawerOpen={showDrawer} />
             <Content>
+                <AddProduct categories={categories} onSubmit={(data) => handleAddProduct(data)} />
                 <Table  
                     title={() => 'Products'}
                     loading={loading} 

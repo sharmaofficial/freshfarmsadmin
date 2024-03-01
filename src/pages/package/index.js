@@ -1,10 +1,11 @@
-import { Button, Drawer, Image, Layout, List, Modal, Switch, Table } from 'antd';
+import { Button, Drawer, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatUsersDataForTable, getApiCall } from '../../utils';
+import { formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
+import AddPackage from '../Add Package';
 
 const data = [
     {
@@ -41,6 +42,7 @@ const Package = () => {
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         getUsersList();
@@ -100,8 +102,28 @@ const Package = () => {
         setSelectedUserToEdit(null);
     };
 
+    async function handleAddPackage(formData) {
+        try {
+            const response = await postApiCall("admin/addPackage", formData, userData.token);
+            const {data, message, status} = response.data;
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+                
+                //TODO: Api return the updated data row, use this instead of calling the api again
+                // setUsersList([...userList, data]);
+            }else{
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
     return (
          <Layout>
+            {contextHolder}
             <Modal title="Edit package" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
                 {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>}
             </Modal>
@@ -124,6 +146,7 @@ const Package = () => {
             </Drawer>
             <Header onDrawerOpen={showDrawer} />
             <Content>
+                <AddPackage onSubmit={(data) => handleAddPackage(data)} />
                 <Table  
                     title={() => 'Packages'}
                     loading={loading} 
@@ -136,7 +159,7 @@ const Package = () => {
                               key: 'id',
                             },
                             {
-                              title: 'Weigth',
+                              title: 'Weigth(in grams)',
                               dataIndex: 'weigth',
                               key: 'weigth',
                             },

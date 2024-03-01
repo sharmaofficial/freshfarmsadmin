@@ -2,7 +2,7 @@ import { Button } from "antd";
 import axios from "axios";
 
 // const BASE_URL = `http://192.168.1.190:8080/`
-const BASE_URL = `http://192.168.0.104:8080/`
+const BASE_URL = `http://192.168.0.105:8080/`
 // const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token) => {
