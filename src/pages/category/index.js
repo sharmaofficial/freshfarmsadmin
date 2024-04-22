@@ -63,7 +63,7 @@ const Category = () => {
                         image: <Image src={item.coverImage} width={20} height={20} />,
                         action: <>
                                     <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                                    <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                                    <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => handleDeleteCategory(item._id)}>Delete</Button>
                                     <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange({...item, isActive: v})} />
                                 </>
                     }));                
@@ -155,11 +155,50 @@ const Category = () => {
         }
     }
 
+    async function handleUpdateCategory(formData) {
+        delete formData.imageURI;
+        try {
+            const response = await postApiCall("admin/editCategory", formData, userData.token);
+            const {data, message, status} = response.data;
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+                setSelectedUserToEdit(null);
+                //TODO: Api return the updated data row, use this instead of calling the api again
+                // setUsersList([...userList, data]);
+            }else{
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
+    async function handleDeleteCategory(id) {
+        try {
+            const response = await postApiCall("admin/deleteCategory", {_id: id}, userData.token);
+            const {data, message, status} = response.data;
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+                //TODO: Api return the updated data row, use this instead of calling the api again
+                // setUsersList([...userList, data]);
+            }else{
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
     return (
          <Layout>
             {contextHolder}
             <Modal title="Edit category" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
-                {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>}
+                {/* {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>} */}
+                <AddCategory preFill={selectedUserToEdit} formName={'Edit Category'} onUpdate={(data) => handleUpdateCategory(data)} />
             </Modal>
              <Drawer
                 title="Fresh Farms Admin"
@@ -180,7 +219,7 @@ const Category = () => {
             </Drawer>
             <Header onDrawerOpen={showDrawer} />
             <Content>
-                <AddCategory onSubmit={(data) => handleAddCategory(data)}/>
+                <AddCategory onAdd={(data) => handleAddCategory(data)}/>
                 <Table  
                     title={() => 'Categories'}
                     loading={loading} 

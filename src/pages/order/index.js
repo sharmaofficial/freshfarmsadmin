@@ -1,10 +1,11 @@
 import { Button, Drawer, Image, Layout, List, Modal, Switch, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatOrderDateTime, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
+import { formatOrderDateTime, formatOrdersDataForTable, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
+import EditOrder from '../Edit Order';
 
 const data = [
     {
@@ -52,6 +53,7 @@ const Order = () => {
             if(userData){
                 const response = await getApiCall("admin/getOrders", userData.token);
                 const {data, status, message} = response.data;
+                console.log(data);
                 if(status){
                     const transformedArray = data.map((item, index) => {
                         return {
@@ -68,7 +70,7 @@ const Order = () => {
                             </>
                         }
                     });                
-                    const {columns} = formatUsersDataForTable(data);
+                    const {columns} = formatOrdersDataForTable(data);
                     setColumns(columns);
                     setUsersList(transformedArray);
                 }
@@ -103,8 +105,9 @@ const Order = () => {
 
     return (
          <Layout>
-            <Modal title="Edit product" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
-                {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>}
+            <Modal title="Edit order" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
+                {/* {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>} */}
+                <EditOrder data={selectedUserToEdit}/>
             </Modal>
              <Drawer
                 title="Fresh Farms Admin"
@@ -129,30 +132,7 @@ const Order = () => {
                     title={() => 'Products'}
                     loading={loading} 
                     dataSource={userList} 
-                    columns={
-                        [
-                            {
-                              title: 'Order Id',
-                              dataIndex: 'orderId',
-                              key: 'orderId',
-                            },
-                            {
-                              title: 'Date',
-                              dataIndex: 'dateTime',
-                              key: 'dateTime',
-                            },
-                            {
-                                title: 'Delivery Address',
-                                dataIndex: 'address',
-                                key: 'address',
-                            },
-                            {
-                              title: 'Action',
-                              dataIndex: 'action',
-                              key: 'action',
-                            },
-                        ]
-                    } 
+                    columns={columns} 
                 />
             </Content>
          <Footer>

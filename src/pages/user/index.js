@@ -1,10 +1,11 @@
-import { Button, Drawer, Layout, List, Modal, Table } from 'antd';
+import { Button, Drawer, Layout, List, Modal, Switch, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatUsersDataForTable, getApiCall } from '../../utils';
+import { formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
+import EditUser from './editUser';
 
 const data = [
     {
@@ -53,6 +54,7 @@ const Users = () => {
                 // const response = await getApiCall("", decryptToken(user.token, 'freshfarms'));
                 const response = await getApiCall("", userData.token);
                 const {data, status, message} = response.data;
+                console.log(data);
                 if(status){
                     const transformedArray = data.map((item, index) => ({
                         key: item._id,
@@ -62,7 +64,8 @@ const Users = () => {
                         mobile: item.data.mobile || "-",
                         action: <>
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                            <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                            {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                            <Switch checked={item.data.isActive} onChange={(v) => updateUserStatus(item.data.isActive, item._id)} />
                         </>
                     }));                
                     const {columns} = formatUsersDataForTable(data);
@@ -77,6 +80,46 @@ const Users = () => {
         }
     };
 
+    async function updateUserStatus(isActive, userId) {
+        console.log(isActive);
+        setLoading(true);
+        let payload =  {isActive : isActive ? false : true, userId};
+        try {
+            const response = await postApiCall("admin/updateUserStatus", payload, userData.token);
+            const {data, status, message} = response.data;
+            setLoading(false);
+            if(status){
+                getUsersList()
+                // console.log(userList);
+                // const userIndex = userList.findIndex(item => item.key === data._id);
+                // console.log("userList", userIndex);
+
+                // let updatedUserList = [...userList];
+                // console.log("updatedUserList", updatedUserList);
+
+                // updatedUserList[userIndex] = {
+                //     key: data._id,
+                //     id: data._id,
+                //     name: data.data.name,
+                //     email: data.data.email,
+                //     mobile: data.data.mobile || "-",
+                //     action: <>
+                //         <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(data)}>Edit</Button>
+                //         <Switch checked={data.data.isActive} onChange={(v) => updateUserStatus(data.data.isActive)} />
+                //     </>
+                // };
+                // setUsersList(updatedUserList);
+            }else{
+                // errorCallback(message)
+                console.log(message);
+            }
+        } catch (error) {
+            console.log("error", error);
+            setLoading(false);
+            // errorCallback(error.message);
+        }
+    }
+
     const showDrawer = () => {
         setVisible(true);
     };
@@ -85,8 +128,28 @@ const Users = () => {
         setVisible(false);
     };
 
-    const handleOk = () => {
+    const handleUpdateSuccess = async(message, data) => {
+        const userIndex = userList.findIndex(item => item.key === data._id);
+        const updatedUserList = [...userList]; 
+        updatedUserList[userIndex] = {
+            key: data._id,
+            id: data._id,
+            name: data.data.name,
+            email: data.data.email,
+            mobile: data.data.mobile || "-",
+            action: <>
+                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(data)}>Edit</Button>
+                <Switch checked={data.data.isActive} onChange={(v) => updateUserStatus(data.data.isActive)} />
+            </>
+        };
+        console.log("updatedUserList", updatedUserList);
+        setUsersList(updatedUserList);
         setSelectedUserToEdit(null);
+    };
+
+    const handleUpdateError = async(message) => {
+        // setSelectedUserToEdit(null);
+        console.log(message);
     };
     
     const handleCancel = () => {
@@ -99,8 +162,8 @@ const Users = () => {
 
     return (
          <Layout>
-            <Modal title="Edit user" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
-                {selectedUserToEdit && <p>{selectedUserToEdit.data.name}</p>}
+            <Modal title="Edit user" footer={null} open={selectedUserToEdit} onCancel={handleCancel}>
+                <EditUser data={selectedUserToEdit} successCallback={handleUpdateSuccess} errorCallback={handleUpdateError} />
             </Modal>
              <Drawer
                 title="Fresh Farms Admin"
@@ -121,7 +184,7 @@ const Users = () => {
             </Drawer>
             <Header logout={logout} onDrawerOpen={showDrawer} />
             <Content>
-                <Table  
+                <Table
                     title={() => 'Users'}
                     loading={loading} 
                     dataSource={userList} 

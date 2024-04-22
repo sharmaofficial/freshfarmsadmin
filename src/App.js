@@ -29,23 +29,26 @@ import Product from './pages/product';
 import Package from './pages/package';
 import InventoryLog from './pages/inventoryLog';
 import useLocalStorage from './utils/localStorageHook';
+import { ChakraProvider } from '@chakra-ui/react';
 
 const App = () => {
   
   return (
-    <Router>
-      <div>
-        <Routes>
-          <Route path='/' element={<Login />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/Category" element={<Category />} />
-          <Route path="/Order" element={<Order />} />
-          <Route path="/Product" element={<Product />} />
-          <Route path="/Package" element={<Package />} />
-          <Route path="/inventoryLog" element={<InventoryLog />} />
-        </Routes>
-      </div>
-    </Router>
+    <ChakraProvider>
+      <Router>
+        <div>
+          <Routes>
+            <Route path='/' element={<Login />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/Category" element={<Category />} />
+            <Route path="/Order" element={<Order />} />
+            <Route path="/Product" element={<Product />} />
+            <Route path="/Package" element={<Package />} />
+            <Route path="/inventoryLog" element={<InventoryLog />} />
+          </Routes>
+        </div>
+      </Router>
+    </ChakraProvider>
   );
 };
 

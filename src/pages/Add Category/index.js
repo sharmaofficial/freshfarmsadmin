@@ -1,19 +1,43 @@
-import { Button, Card, Form, Input, Upload, message } from 'antd'
+import { Button, Card, Form, Image, Input, Switch, Upload, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons';
 import { InboxOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Title from 'antd/es/typography/Title';
 
-const AddCategory = ({onSubmit}) => {
+const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
     const { Dragger } = Upload;
-
+    const formRef = useRef();
+    const [isEdit, setIsEdit] = useState(false);
+    const [isTouched, setIsTouched] = useState(false);
     const [formData, setFormaData] = useState({
         name: "",
         coverImage: null,
         image:{
             type: ""
         }
-    })
+    });
+
+    useEffect(() => {
+        setIsTouched(false);
+        if(preFill){
+            console.log(preFill);
+            setIsEdit(true);
+            setFormaData({
+                ...formData,
+                name: preFill.name,
+                imageURI: preFill.coverImage,
+                isActive: preFill.isActive,
+                _id: preFill._id
+            });
+            formRef.current.setFieldsValue({
+                ...formData,
+                Name: preFill.name,
+                active: preFill.isActive
+            })
+        }else{
+            setIsEdit(false);
+        }
+    },[preFill])
 
     async function onChange(event) {
         const base64 = await convertBase64(event.target.files[0]);
@@ -25,7 +49,8 @@ const AddCategory = ({onSubmit}) => {
             image: {
                 type: event.target.files[0].type
             }
-        })
+        });
+        setIsTouched(true);
     }
 
     function convertBase64(file){
@@ -41,10 +66,17 @@ const AddCategory = ({onSubmit}) => {
         })
     }
 
+    function handleChangeStatus(v) {
+        setFormaData({
+            ...formData,
+            isActive: v
+        })
+    }
+
     return(
         <Card style={{margin: 10}}>
-            <Title level={4} style={{marginBottom: 20}}>Add Category</Title>
-            <Form name='Add Category'>
+            <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Category'}</Title>
+            <Form ref={formRef} name={formName || 'Add Category'}>
                 <Form.Item name="Name" label="Name">
                     <Input
                         name='Category Name'
@@ -63,8 +95,38 @@ const AddCategory = ({onSubmit}) => {
                         required
                     />
                 </Form.Item>
+                {
+                    isEdit ?
+                    <Form.Item name="active" label="Category Image">
+                        <Switch
+                            checked={formData.isActive}
+                            onChange={v => handleChangeStatus(v)}
+                        />
+                    </Form.Item>
+                    :
+                    null
+                }
+                {
+                    isEdit ?
+                    !isTouched ?
+                    <div style={{marginTop: 10, marginBottom: 10}}>                        
+                        <Image
+                            src={formData.imageURI}
+                            width={200}
+                        />
+                    </div>
+                    :
+                    <div style={{marginTop: 10, marginBottom: 10}}>                        
+                        <Image
+                            src={`data:image/png;base64,${formData.coverImage}`}
+                            width={200}
+                        />
+                    </div>
+                    :
+                    null
+                }
                 <Form.Item>
-                    <Button onClick={() => onSubmit(formData)}>
+                    <Button onClick={() =>{isEdit ? onUpdate(formData) : onAdd(formData)}}>
                         Submit
                     </Button>
                 </Form.Item>
