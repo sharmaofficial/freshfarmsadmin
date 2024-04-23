@@ -62,6 +62,7 @@ const Order = () => {
                             orderId: item?.orderId,
                             dateTime: formatOrderDateTime(item?.dateTime),
                             address: item?.address?.address,
+                            status: item?.orderStatus,
                             action:
                             <>
                                 <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
@@ -103,11 +104,38 @@ const Order = () => {
         setSelectedUserToEdit(null);
     };
 
+    const handleUpdateSuccess = async(message, data) => {
+        const userIndex = userList.findIndex(item => item.key === data._id);
+        const updatedUserList = [...userList]; 
+        updatedUserList[userIndex] = {
+            key: data?._id,
+            id: data?._id,
+            orderId: data?.orderId,
+            dateTime: formatOrderDateTime(data?.dateTime),
+            address: data?.address?.address,
+            status: data?.orderStatus,
+            action:
+            <>
+                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(data)}>Edit</Button>
+                {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
+            </>
+        };
+        console.log("updatedUserList", updatedUserList);
+        setUsersList(updatedUserList);
+        setSelectedUserToEdit(null);
+    };
+
+    const handleUpdateError = async(message) => {
+        // setSelectedUserToEdit(null);
+        console.log(message);
+    };
+
     return (
          <Layout>
-            <Modal title="Edit order" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
+            <Modal footer={null} title="Edit order" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
                 {/* {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>} */}
-                <EditOrder data={selectedUserToEdit}/>
+                <EditOrder successCallback={handleUpdateSuccess} errorCallback={handleUpdateError} data={selectedUserToEdit}/>
             </Modal>
              <Drawer
                 title="Fresh Farms Admin"

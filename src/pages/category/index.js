@@ -1,6 +1,6 @@
 import { Button, Drawer, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
+import { formatCategoryDataForTable, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
@@ -60,14 +60,14 @@ const Category = () => {
                         key: item._id,
                         id: item._id,
                         name: item.name,
-                        image: <Image src={item.coverImage} width={20} height={20} />,
+                        image: <Image src={item.coverImage} width={40} height={40} />,
                         action: <>
                                     <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
                                     <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => handleDeleteCategory(item._id)}>Delete</Button>
                                     <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange({...item, isActive: v})} />
                                 </>
                     }));                
-                    const {columns} = formatUsersDataForTable(data);
+                    const {columns} = formatCategoryDataForTable(data);
                     setColumns(columns);
                     setUsersList(transformedArray);
                 }
@@ -137,6 +137,13 @@ const Category = () => {
     };
 
     async function handleAddCategory(fromData) {
+        if(!fromData.name){
+            messageApi.error(`Please enter Category Name`);
+            return;
+        }else if(!fromData.image.type){
+            messageApi.error(`Please select Category Image`);
+            return; 
+        }
         try {
             const response = await postApiCall("admin/addCategory", fromData, userData.token);
             const {data, message, status} = response.data;
@@ -224,25 +231,7 @@ const Category = () => {
                     title={() => 'Categories'}
                     loading={loading} 
                     dataSource={userList} 
-                    columns={
-                        [
-                            {
-                              title: 'Name',
-                              dataIndex: 'name',
-                              key: 'name',
-                            },
-                            {
-                              title: 'image',
-                              dataIndex: 'image',
-                              key: 'image',
-                            },
-                            {
-                              title: 'Action',
-                              dataIndex: 'action',
-                              key: 'action',
-                            },
-                        ]
-                    } 
+                    columns={columns} 
                 />
             </Content>
          <Footer>
