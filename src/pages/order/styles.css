@@ -1,0 +1,41 @@
+.body1 {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: 'absolute'; left: '-9999px'
+}
+.shop-name {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.bill-details {
+    margin-bottom: 20px;
+}
+.customer-details {
+    margin-bottom: 20px;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.th1, .td1 {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+.th1 {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+.total {
+    font-weight: bold;
+    text-align: right;
+}

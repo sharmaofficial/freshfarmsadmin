@@ -1,12 +1,15 @@
 import { Button, Drawer, Image, Layout, List, Modal, Switch, Table } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatOrderDateTime, formatOrdersDataForTable, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
 import EditOrder from '../Edit Order';
-
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import BillFormat from './BillFormat';
+import './styles.css'
 const data = [
     {
       title: 'Users',
@@ -35,11 +38,14 @@ const data = [
 ];
 
 const Order = () => {
+
+    const printRef = useRef();
     const [loading, setLoading] = useState(false);
     const [userList, setUsersList] = useState([]);
     const [columns, setColumns] = useState([]);
     const {userData} = useLocalStorage('user');
     const [visible, setVisible] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const navigate = useNavigate();
 
@@ -65,7 +71,8 @@ const Order = () => {
                             status: item?.orderStatus,
                             action:
                             <>
-                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
+                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => {setSelectedUserToEdit(item); setShowModal(true)}}>Edit</Button>
+                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item); handleGeneratePDF(item?.orderId)}}>Generate Bill</Button>
                                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                             </>
@@ -82,6 +89,29 @@ const Order = () => {
             setLoading(false);
         }
     };
+    function handleGeneratePDF(id){
+        const input = printRef.current;
+        // if (!input) {
+        //     console.error("Table reference not found.");
+        //     return;
+        // }
+        // html2canvas(input)
+        //   .then((canvas) => {
+        //     const pdf = new jsPDF('p', 'mm', 'a4');
+        //     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
+        //     pdf.save(`Order - ${id}.pdf`);
+        //   }).catch((error) => {
+        //     console.error("Error generating PDF:", error);
+        //   });
+
+        html2canvas(document.getElementById("#bill")).then(canvas => {
+            document.body.appendChild(canvas);  // if you want see your screenshot in body.
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF();
+            pdf.addImage(imgData, 'PNG', 0, 0);
+            pdf.save(`Order - ${id || ''}.pdf`);
+        });
+      };
 
     function handleCategoryStateChange(newStatus, categoryId) {
         console.log("newStatus", newStatus);
@@ -94,14 +124,17 @@ const Order = () => {
 
     const onClose = () => {
         setVisible(false);
+        setShowModal(false);
     };
 
     const handleOk = () => {
         setSelectedUserToEdit(null);
+        setShowModal(false);
     };
     
     const handleCancel = () => {
         setSelectedUserToEdit(null);
+        setShowModal(false);
     };
 
     const handleUpdateSuccess = async(message, data) => {
@@ -117,6 +150,7 @@ const Order = () => {
             action:
             <>
                 <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(data)}>Edit</Button>
+                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => {setSelectedUserToEdit(data); handleGeneratePDF(data?.orderId)}}>Generate Bill</Button>
                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
             </>
@@ -133,7 +167,7 @@ const Order = () => {
 
     return (
          <Layout>
-            <Modal footer={null} title="Edit order" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
+            <Modal footer={null} title="Edit order" open={showModal} onOk={handleOk} onCancel={handleCancel}>
                 {/* {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>} */}
                 <EditOrder successCallback={handleUpdateSuccess} errorCallback={handleUpdateError} data={selectedUserToEdit}/>
             </Modal>
@@ -163,8 +197,21 @@ const Order = () => {
                     columns={columns} 
                 />
             </Content>
-         <Footer>
-         </Footer>
+        <Footer>
+        </Footer>
+        {/* Bill to print */}
+        <div style={{position: 'absolute', left: '-9999px'}} id='#bill'>
+            <BillFormat
+                shopName="ABC Shop"
+                billNo="12345"
+                date="April 25, 2024"
+                customerName="John Doe"
+                email="john@example.com"
+                address="123 Main St, City"
+                products={selectedUserToEdit?.products}
+            />
+        </div>
+
      </Layout>
     );
 }
