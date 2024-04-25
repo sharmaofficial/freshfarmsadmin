@@ -1,6 +1,6 @@
-import { Button, Card, Dropdown, Form, Input, Space, Upload, message } from 'antd'
+import { Button, Card, Dropdown, Form, Image, Input, Space, Upload, message } from 'antd'
 import { DownOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Title from 'antd/es/typography/Title';
 
 // const items = [
@@ -33,8 +33,16 @@ import Title from 'antd/es/typography/Title';
 //     // onClick: handleMenuClick,
 //   };
 
-const AddProduct = ({onSubmit, categories}) => {
-
+const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
+    
+    const formRef = useRef();
+    const [isEdit, setIsEdit] = useState(false);
+    const [isTouched, setIsTouched] = useState(false);
+    const [items, setitems] = useState([])
+    const [selectedCategory, setSelectedCategory] = useState({
+        id: "",
+        name: ""
+    })
     const [formData, setFormaData] = useState({
         name: "",
         coverImage: null,
@@ -47,21 +55,57 @@ const AddProduct = ({onSubmit, categories}) => {
         price: 0
     });
 
-    const [items, setitems] = useState([])
-    const [selectedCategory, setSelectedCategory] = useState({
-        id: "",
-        name: ""
-    })
+
+    useEffect(() => {
+        setIsTouched(false);
+        if(preFill){
+            setSelectedCategory({
+                id: "",
+                name: ""
+            })
+            setIsEdit(true);
+            setFormaData({
+                ...formData,
+                name: preFill.name,
+                imageURI: preFill.coverImage,
+                isActive: preFill.isActive,
+                description: preFill.description,
+                estimated_delivery: preFill.estimated_delivery,
+                price: preFill.price,
+                categoryId: preFill.categoryId,
+                _id: preFill._id
+            });
+            formRef.current.setFieldsValue({
+                ...formData,
+                Name: preFill.name,
+                Description: preFill.description,
+                Delivery: preFill.estimated_delivery,
+                Price: preFill.price,
+                active: preFill.isActive
+            });
+        }else{
+            setIsEdit(false);
+        }
+    },[preFill])
+
 
     useEffect(() => {
         let temp = categories.map(item => {
+            if(isEdit){
+                if(item._id === preFill.categoryId){
+                    setSelectedCategory({
+                        id: item._id,
+                        name: item.name
+                    })
+                }
+            }
             return{
                 key: item._id,
                 label: item.name
             }
         });
         setitems(temp);
-    },[categories]);
+    },[categories, preFill]);
 
     function handleMenuClick(e) {
         console.log(e.key);
@@ -96,7 +140,8 @@ const AddProduct = ({onSubmit, categories}) => {
             image: {
                 type: event.target.files[0].type
             }
-        })
+        });
+        setIsTouched(true);
     }
 
     function convertBase64(file){
@@ -114,7 +159,7 @@ const AddProduct = ({onSubmit, categories}) => {
 
     return(
         <Card style={{margin: 10}}>
-            <Title level={4} style={{marginBottom: 20}}>Add Product</Title>
+            <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Product'}</Title>
             <div style={{marginBottom: 20}}>
                 <Dropdown
                     menu={menuProps}
@@ -128,7 +173,7 @@ const AddProduct = ({onSubmit, categories}) => {
                     </Button>
                 </Dropdown>
             </div>
-            <Form name='Add Product'>
+            <Form ref={formRef}  name={formName || 'Add Product'}>
                 <Form.Item name="Name" label="Name">
                     <Input
                         name='Product Name'
@@ -173,8 +218,27 @@ const AddProduct = ({onSubmit, categories}) => {
                         required
                     />
                 </Form.Item>
+                {
+                    isEdit ?
+                    !isTouched ?
+                    <div style={{marginTop: 10, marginBottom: 10}}>                        
+                        <Image
+                            src={formData.imageURI}
+                            width={200}
+                        />
+                    </div>
+                    :
+                    <div style={{marginTop: 10, marginBottom: 10}}>                        
+                        <Image
+                            src={`data:image/png;base64,${formData.coverImage}`}
+                            width={200}
+                        />
+                    </div>
+                    :
+                    null
+                }
                 <Form.Item>
-                    <Button onClick={() => onSubmit(formData)}>
+                    <Button onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}}>
                         Submit
                     </Button>
                 </Form.Item>

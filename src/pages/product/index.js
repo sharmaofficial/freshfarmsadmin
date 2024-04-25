@@ -1,6 +1,6 @@
 import { Button, Drawer, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
+import { formatProductDataForTable, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
@@ -71,10 +71,10 @@ const Product = () => {
                         <>
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
-                            <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />
+                            <Switch checked={item.isActive} onChange={(v) => handleProductStateChange({...item, isActive: v})} />
                         </>
                     }));                
-                    const {columns} = formatUsersDataForTable(data);
+                    const {columns} = formatProductDataForTable(data.products);
                     setColumns(columns);
                     setUsersList(transformedArray);
                 }
@@ -85,11 +85,6 @@ const Product = () => {
             setLoading(false);
         }
     };
-
-    function handleCategoryStateChange(newStatus, categoryId) {
-        console.log("newStatus", newStatus);
-        console.log("categoryId", categoryId);
-    }
 
     const showDrawer = () => {
         setVisible(true);
@@ -127,11 +122,71 @@ const Product = () => {
         }
     }
 
+    async function handleProductStateChange(updatedProduct) {
+        console.log("updatedProduct", updatedProduct);
+        let payload = {
+            isActive: updatedProduct.isActive,
+            _id: updatedProduct._id,
+        }
+        try {
+            const response = await postApiCall("admin/editProduct", payload, userData.token);
+            const {data, message, status} = response.data;
+            console.log(data);
+            console.log(message);
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+
+                //TODO: Api return the updated data row, use this instead of calling the api again
+                // let temp = userList.map((item) => {
+                //     if (item._id === data._id) {
+                //         console.log("in if");
+                //         return {
+                //             ...item,
+                //             ...data
+                //         }
+                //     } else {
+                //         console.log("in else");
+                //         return item;
+                //     }
+                // });
+                // console.log("temp", temp);
+                // setUsersList(temp);
+            }else{
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
+    async function handleProductUpdate(formData) {
+        delete formData.imageURI;
+        try {
+            const response = await postApiCall("admin/editProduct", formData, userData.token);
+            const {data, message, status} = response.data;
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+                setSelectedUserToEdit(null);
+                //TODO: Api return the updated data row, use this instead of calling the api again
+                // setUsersList([...userList, data]);
+            }else{
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
     return (
          <Layout>
             {contextHolder}
-            <Modal title="Edit product" open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
-                {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>}
+            <Modal open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
+                {/* {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>} */}
+                <AddProduct preFill={selectedUserToEdit} categories={categories} formName={'Edit Product'} onUpdate={handleProductUpdate} />
             </Modal>
              <Drawer
                 title="Fresh Farms Admin"
@@ -157,30 +212,7 @@ const Product = () => {
                     title={() => 'Products'}
                     loading={loading} 
                     dataSource={userList} 
-                    columns={
-                        [
-                            {
-                              title: 'Cover Image',
-                              dataIndex: 'image',
-                              key: 'image',
-                            },
-                            {
-                              title: 'Name',
-                              dataIndex: 'name',
-                              key: 'name',
-                            },
-                            {
-                                title: 'Description',
-                                dataIndex: 'description',
-                                key: 'description',
-                            },
-                            {
-                              title: 'Action',
-                              dataIndex: 'action',
-                              key: 'action',
-                            },
-                        ]
-                    } 
+                    columns={columns} 
                 />
             </Content>
          <Footer>

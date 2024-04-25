@@ -254,6 +254,48 @@ function formatCategoryDataForTable(data) {
   return {columns};
 }
 
+function formatProductDataForTable(data) {
+  console.log(data);
+
+  const columns = [
+      {
+        title: 'Image',
+        dataIndex: 'image',
+        key: 'image',
+      },
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        filters: data.map(item => ({
+          text: item.name,
+          value: item.name,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.name.includes(value),
+      },
+      {
+        title: 'Description',
+        dataIndex: 'description',
+        key: 'description',
+        filters: data.map(item => ({
+          text: item.description,
+          value: item.description,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.description.includes(value),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        width: '30%',
+      },
+  ];
+
+  return {columns};
+}
+
 const encryptToken = async (token, key) => {
   const encodedToken = new TextEncoder().encode(token);
   const encryptedData = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: new Uint8Array(12) }, key, encodedToken);
@@ -290,6 +332,7 @@ export {
     formatUsersDataForTable,
     formatOrdersDataForTable,
     formatCategoryDataForTable,
+    formatProductDataForTable,
     encryptToken,
     decryptToken,
     formatOrderDateTime
