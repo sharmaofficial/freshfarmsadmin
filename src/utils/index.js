@@ -3,7 +3,7 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 // const BASE_URL = `http://192.168.1.190:8080/`
-const BASE_URL = `http://192.168.1.110:8080/`
+const BASE_URL = `http://192.168.1.107:8080/`
 // const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token) => {
@@ -119,7 +119,11 @@ function formatOrdersDataForTable(data) {
         width: '20%',
         render: (_, record) => {
           return (
-            <Paragraph copyable>{record?.address}</Paragraph>
+            <>
+              <Paragraph>Name: {record?.customerName}</Paragraph>
+              <Paragraph copyable>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
+              <Paragraph copyable>{record?.address}</Paragraph>
+            </>
           )
         }
       },
@@ -296,6 +300,76 @@ function formatProductDataForTable(data) {
   return {columns};
 }
 
+function formatPackageDataForTable(data) {
+
+  const columns = [
+      {
+        title: 'Id',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: 'Weight(in grams)',
+        dataIndex: 'weigth',
+        key: 'weigth',
+        filters: data.map(item => ({
+          text: item.name,
+          value: item.name,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.weigth.toString().includes(value),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        width: '30%',
+      },
+  ];
+
+  return {columns};
+}
+
+function formatLogsDataForTable(data) {
+
+  const columns = [
+      {
+        title: 'Log Id',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: 'Order Id',
+        dataIndex: 'orderId',
+        key: 'orderId',
+        filters: data.map(item => ({
+          text: item.orderId,
+          value: item.orderId,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.orderId.includes(value),
+      },
+      {
+        title: 'Date',
+        dataIndex: 'dateTime',
+        key: 'dateTime',
+        filters: data.map(item => ({
+          text: item.dateTime,
+          value: item.dateTime,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+      },
+  ];
+
+  return {columns};
+}
+
 const encryptToken = async (token, key) => {
   const encodedToken = new TextEncoder().encode(token);
   const encryptedData = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: new Uint8Array(12) }, key, encodedToken);
@@ -333,6 +407,8 @@ export {
     formatOrdersDataForTable,
     formatCategoryDataForTable,
     formatProductDataForTable,
+    formatPackageDataForTable,
+    formatLogsDataForTable,
     encryptToken,
     decryptToken,
     formatOrderDateTime

@@ -1,6 +1,6 @@
 import { Button, Drawer, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
+import { formatPackageDataForTable, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
@@ -69,7 +69,7 @@ const Package = () => {
                             <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />
                         </>
                     }));                
-                    const {columns} = formatUsersDataForTable(data);
+                    const {columns} = formatPackageDataForTable(data);
                     setColumns(columns);
                     setUsersList(transformedArray);
                 }
@@ -151,25 +151,7 @@ const Package = () => {
                     title={() => 'Packages'}
                     loading={loading} 
                     dataSource={userList} 
-                    columns={
-                        [
-                            {
-                              title: 'Id',
-                              dataIndex: 'id',
-                              key: 'id',
-                            },
-                            {
-                              title: 'Weigth(in grams)',
-                              dataIndex: 'weigth',
-                              key: 'weigth',
-                            },
-                            {
-                              title: 'Action',
-                              dataIndex: 'action',
-                              key: 'action',
-                            },
-                        ]
-                    } 
+                    columns={columns}
                 />
             </Content>
          <Footer>

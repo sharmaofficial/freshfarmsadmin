@@ -1,6 +1,6 @@
 import { Button, Drawer, Image, Layout, List, Modal, Switch, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { formatOrderDateTime, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
+import { formatLogsDataForTable, formatOrderDateTime, formatUsersDataForTable, getApiCall, postApiCall } from '../../utils';
 import useLocalStorage from '../../utils/localStorageHook';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Header from '../../components/Header';
@@ -68,7 +68,7 @@ const InventoryLog = () => {
                             </>
                         }
                     });                
-                    const {columns} = formatUsersDataForTable(data);
+                    const {columns} = formatLogsDataForTable(data);
                     setColumns(columns);
                     setUsersList(transformedArray);
                 }
@@ -129,25 +129,7 @@ const InventoryLog = () => {
                     title={() => 'Products'}
                     loading={loading} 
                     dataSource={userList} 
-                    columns={
-                        [
-                            {
-                              title: 'Order Id',
-                              dataIndex: 'orderId',
-                              key: 'orderId',
-                            },
-                            {
-                              title: 'Date',
-                              dataIndex: 'dateTime',
-                              key: 'dateTime',
-                            },
-                            {
-                              title: 'Action',
-                              dataIndex: 'action',
-                              key: 'action',
-                            },
-                        ]
-                    } 
+                    columns={columns} 
                 />
             </Content>
          <Footer>

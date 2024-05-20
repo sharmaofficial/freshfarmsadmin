@@ -30,6 +30,7 @@ import Package from './pages/package';
 import InventoryLog from './pages/inventoryLog';
 import useLocalStorage from './utils/localStorageHook';
 import { ChakraProvider } from '@chakra-ui/react';
+import AddStock from './pages/AddStock';
 
 const App = () => {
   
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/Product" element={<Product />} />
             <Route path="/Package" element={<Package />} />
             <Route path="/inventoryLog" element={<InventoryLog />} />
+            <Route path="/AddStock" element={<AddStock />} />
           </Routes>
         </div>
       </Router>

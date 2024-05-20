@@ -29,6 +29,10 @@ const data = [
         route: "/Package"
     },
     {
+        title: 'Add To Inventory',
+        route: "/AddStock"
+    },
+    {
         title: 'Inventory Log',
         route: "/InventoryLog"
     },

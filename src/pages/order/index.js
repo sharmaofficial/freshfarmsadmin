@@ -69,6 +69,8 @@ const Order = () => {
                             dateTime: formatOrderDateTime(item?.dateTime),
                             address: item?.address?.address,
                             status: item?.orderStatus,
+                            contact: item?.address?.phoneNumber,
+                            customerName: item?.address?.name,
                             action:
                             <>
                                 <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => {setSelectedUserToEdit(item); setShowModal(true)}}>Edit</Button>
@@ -90,26 +92,14 @@ const Order = () => {
         }
     };
     function handleGeneratePDF(id){
-        const input = printRef.current;
-        // if (!input) {
-        //     console.error("Table reference not found.");
-        //     return;
-        // }
-        // html2canvas(input)
-        //   .then((canvas) => {
-        //     const pdf = new jsPDF('p', 'mm', 'a4');
-        //     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
-        //     pdf.save(`Order - ${id}.pdf`);
-        //   }).catch((error) => {
-        //     console.error("Error generating PDF:", error);
-        //   });
-
         html2canvas(document.getElementById("#bill")).then(canvas => {
             document.body.appendChild(canvas);  // if you want see your screenshot in body.
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF();
             pdf.addImage(imgData, 'PNG', 0, 0);
             pdf.save(`Order - ${id || ''}.pdf`);
+        }).catch((error) => {
+            console.error("Error generating PDF:", error);
         });
       };
 
@@ -147,6 +137,8 @@ const Order = () => {
             dateTime: formatOrderDateTime(data?.dateTime),
             address: data?.address?.address,
             status: data?.orderStatus,
+            contact: data?.address?.phoneNumber,
+            customerName: data?.address?.name,
             action:
             <>
                 <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(data)}>Edit</Button>
@@ -200,7 +192,7 @@ const Order = () => {
         <Footer>
         </Footer>
         {/* Bill to print */}
-        <div style={{position: 'absolute', left: '-9999px'}} id='#bill'>
+        <div style={{position: 'absolute', left: '-9999px',}} id='#bill'>
             <BillFormat
                 shopName="ABC Shop"
                 billNo="12345"
