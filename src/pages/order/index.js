@@ -141,13 +141,12 @@ const Order = () => {
             customerName: data?.address?.name,
             action:
             <>
-                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(data)}>Edit</Button>
+                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => {setSelectedUserToEdit(data); setShowModal(true)}}>Edit</Button>
                 <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => {setSelectedUserToEdit(data); handleGeneratePDF(data?.orderId)}}>Generate Bill</Button>
                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
             </>
         };
-        console.log("updatedUserList", updatedUserList);
         setUsersList(updatedUserList);
         setSelectedUserToEdit(null);
     };
