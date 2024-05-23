@@ -67,6 +67,7 @@ const Product = () => {
                         name: item.name,
                         description: item.description,
                         image: <Image src={item.coverImage} width={20} height={20} />,
+                        shopName: item.shopName,
                         action:
                         <>
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
@@ -184,7 +185,7 @@ const Product = () => {
     return (
          <Layout>
             {contextHolder}
-            <Modal open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
+            <Modal footer={null} open={selectedUserToEdit} onOk={handleOk} onCancel={handleCancel}>
                 {/* {selectedUserToEdit && <p>{selectedUserToEdit.name}</p>} */}
                 <AddProduct preFill={selectedUserToEdit} categories={categories} formName={'Edit Product'} onUpdate={handleProductUpdate} />
             </Modal>

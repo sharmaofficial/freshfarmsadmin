@@ -37,16 +37,33 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
     
     const formRef = useRef();
     const [isEdit, setIsEdit] = useState(false);
+    const [shops, setShops] = useState([
+        {
+            key: `1`,
+            label: `Fresh Farms`
+        },
+        {
+            key: `2`,
+            label: `Shop 1`
+        },
+    ]);
     const [isTouched, setIsTouched] = useState(false);
     const [items, setitems] = useState([])
     const [selectedCategory, setSelectedCategory] = useState({
         id: "",
         name: ""
+    });
+
+    const [selectedShop, setSelectedShop] = useState({
+        id: "",
+        name: ""
     })
+
     const [formData, setFormaData] = useState({
         name: "",
         coverImage: null,
         categoryId: "",
+        shopName: "",
         image:{
             type: ""
         },
@@ -54,7 +71,6 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         estimated_delivery: "",
         price: 0
     });
-
 
     useEffect(() => {
         setIsTouched(false);
@@ -73,6 +89,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                 estimated_delivery: preFill.estimated_delivery,
                 price: preFill.price,
                 categoryId: preFill.categoryId,
+                shopName: preFill.shopName,
                 _id: preFill._id
             });
             formRef.current.setFieldsValue({
@@ -87,7 +104,6 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
             setIsEdit(false);
         }
     },[preFill])
-
 
     useEffect(() => {
         let temp = categories.map(item => {
@@ -104,7 +120,22 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                 label: item.name
             }
         });
+        let updatedShops = shops.map(item => {
+            if(isEdit){
+                if(item.label === preFill.shopName){
+                    setSelectedShop({
+                        id: item.key,
+                        name: item.label
+                    })
+                }
+            }
+            return{
+                key: item.key,
+                label: item.label
+            }
+        });
         setitems(temp);
+        setShops(updatedShops);
     },[categories, preFill]);
 
     function handleMenuClick(e) {
@@ -121,6 +152,22 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
             {
                 ...formData,
                 categoryId: e.key
+            }
+        )
+    }
+
+    function handleShopSelect(e) {
+        let label = shops[Number(e.keyPath[0]) - 1].label
+        let key = shops[Number(e.keyPath[0]) - 1].key;
+
+        setSelectedShop({
+            id: key,
+            name: label
+        });
+        setFormaData(
+            {
+                ...formData,
+                shopName: label
             }
         )
     }
@@ -163,11 +210,25 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
             <div style={{marginBottom: 20}}>
                 <Dropdown
                     menu={menuProps}
-                    
                 >
                     <Button>
                         <Space>
                             {selectedCategory.name || 'Select Category'}
+                            <DownOutlined/>
+                        </Space>
+                    </Button>
+                </Dropdown>
+            </div>
+            <div style={{marginBottom: 20}}>
+                <Dropdown
+                    menu={{
+                        items: shops,
+                        onClick: handleShopSelect
+                    }}
+                >
+                    <Button>
+                        <Space>
+                            {selectedShop.name || 'Select Shop Name'}
                             <DownOutlined/>
                         </Space>
                     </Button>

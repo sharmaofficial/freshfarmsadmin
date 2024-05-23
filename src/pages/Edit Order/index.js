@@ -13,16 +13,14 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
 
     useEffect(() => {
         setFormData({...data})
+        console.log("data", data);
     },[data]);
 
     async function updateOrder() {
         setLoading(true);
         try {
-            const response = await postApiCall("admin/updateOrderStatus", {status: formData.orderStatus, id: formData._id}, userData.token);
+            const response = await postApiCall("admin/updateOrderStatus", {status: formData.orderStatus, id: formData.orderId}, userData.token);
             const {data, status, message} = response.data;
-            console.log("data", data);
-            console.log("status", status);
-            console.log("message", message);
             setLoading(false);
             if(status){
                 setFormData({});
@@ -45,6 +43,22 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Date</Text>
                 <Paragraph>{formatOrderDateTime(formData.dateTime)}</Paragraph>
             </div>
+
+            {
+                formData?.products?.map(product => {
+                    return(
+                        <>                        
+                            <div style={{flexDirection: 'column'}}>
+                                <Text style={{fontWeight: 'bold', fontSize: 20}}>Name: {product?.name}</Text>
+                            </div>
+                            <div style={{flexDirection: 'column'}}>
+                                <Text style={{fontWeight: 'bold', fontSize: 20}}>Quantity: {product?.packageType?.name}gm * {product?.quantity}</Text>
+                            </div>
+                        </>
+                    )
+                })
+  
+            }
             {
                 <div>
                     <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Status</Text>
@@ -52,7 +66,9 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
                         style={{width: '100%'}} 
                         value={formData?.orderStatus || 'NA'} 
                         onChange={(v)=> setFormData({...formData, orderStatus: v})}
-                        options={[{ value: 'Processing', label: <span>Processing</span> }, { value: 'In Transit', label: <span>In Transit</span> }, { value: 'Delivered', label: <span>Delivered</span> }, { value: 'Cancelled', label: <span>Cancelled</span> }]} />
+                        options={[{ value: 'Processing', label: <span>Processing</span> }, { value: 'In Transit', label: <span>In Transit</span> }, { value: 'Delivered', label: <span>Delivered</span> }]} 
+                        disabled={formData?.orderStatus === 'Cancelled'}
+                    />
                 </div>
             }
             

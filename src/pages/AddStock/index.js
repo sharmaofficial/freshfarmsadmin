@@ -50,7 +50,7 @@ const AddStock = ({onAdd, onUpdate, formName, preFill}) => {
 
                     return {
                         ...item2,
-                        currentQuantity: match ? match.qauntity : 0,
+                        currentQuantity: match ? match.quantity : 0,
                         updateQuantity: 0,
                         isActive: match?.isActive
                     };

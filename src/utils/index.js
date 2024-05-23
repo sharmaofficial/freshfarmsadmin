@@ -9,6 +9,10 @@ const BASE_URL = `http://192.168.1.107:8080/`
 const postApiCall = async(path, params, token) => {
   return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token}});
 }
+
+const putApiCall = async(path, params, token) => {
+  return await axios.put(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token}});
+}
   
 const getApiCall = async(path="", token) => {
   return await axios.get(`${BASE_URL}${path}`,{headers: { Authorization: token }});
@@ -290,6 +294,17 @@ function formatProductDataForTable(data) {
         onFilter: (value, record) => record.description.includes(value),
       },
       {
+        title: 'Shop Name',
+        dataIndex: 'shopName',
+        key: 'shopName',
+        filters: data.map(item => ({
+          text: item.shopName,
+          value: item.shopName,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.shopName.includes(value),
+      },
+      {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
@@ -403,6 +418,7 @@ function formatOrderDateTime(dateTime) {
 export {
     getApiCall,
     postApiCall,
+    putApiCall,
     formatUsersDataForTable,
     formatOrdersDataForTable,
     formatCategoryDataForTable,
