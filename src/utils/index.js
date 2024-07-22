@@ -36,8 +36,8 @@ function formatUsersDataForTable(data) {
           dataIndex: 'name',
           key: 'name',
           filters: data.map(item => ({
-            text: item.data.name,
-            value: item.data.name,
+            text: item.name,
+            value: item.name,
           })),
           filterMode: 'tree',
           filterSearch: true,
@@ -49,8 +49,8 @@ function formatUsersDataForTable(data) {
           dataIndex: 'email',
           key: 'email',
           filters: data.map(item => ({
-            text: item.data.email,
-            value: item.data.email,
+            text: item.email,
+            value: item.email,
           })),
           filterMode: 'tree',
           filterSearch: true,
@@ -62,8 +62,8 @@ function formatUsersDataForTable(data) {
           dataIndex: 'mobile',
           key: 'mobile',
           filters: data.map(item => ({
-            text: item.data.mobile,
-            value: item.data.mobile,
+            text: item.phone,
+            value: item.phone,
           })),
         },
         {

@@ -33,6 +33,7 @@ const EditUser = ({data, successCallback, errorCallback}) => {
             const response = await postApiCall("admin/editUser", {data: payload, userId}, userData.token);
             const {data, status, message} = response.data;
             console.log("data", data);
+            alert(status)
             setLoading(false);
             if(status){
                 setFormData({});

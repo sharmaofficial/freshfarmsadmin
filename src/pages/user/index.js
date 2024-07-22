@@ -43,6 +43,7 @@ const Users = () => {
     const [userList, setUsersList] = useState([]);
     const [columns, setColumns] = useState([]);
     const {userData, deleteData} = useLocalStorage('user');
+    console.log(userData);
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const navigate = useNavigate()
@@ -61,15 +62,15 @@ const Users = () => {
                 console.log(data);
                 if(status){
                     const transformedArray = data.map((item, index) => ({
-                        key: item._id,
-                        id: item._id,
-                        name: item.data.name,
-                        email: item.data.email,
-                        mobile: item.data.mobile || "-",
+                        key: item.$id,
+                        id: item.$id,
+                        name: item.name,
+                        email: item.email,
+                        mobile: item.phone || "-",
                         action: <>
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
                             {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
-                            <Switch checked={item.data.isActive} onChange={(v) => updateUserStatus(item.data.isActive, item._id)} />
+                            <Switch checked={item.status} onChange={(v) => updateUserStatus(item.status, item.$id)} />
                         </>
                     }));                
                     const {columns} = formatUsersDataForTable(data);
@@ -93,7 +94,7 @@ const Users = () => {
             const {data, status, message} = response.data;
             setLoading(false);
             if(status){
-                getUsersList()
+                getUsersList();
                 // console.log(userList);
                 // const userIndex = userList.findIndex(item => item.key === data._id);
                 // console.log("userList", userIndex);
