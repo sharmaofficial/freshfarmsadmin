@@ -55,19 +55,20 @@ const Category = () => {
                 // const response = await getApiCall("", decryptToken(user.token, 'freshfarms'));
                 const response = await getApiCall("admin/getCategories", userData.token);
                 const {data, status, message} = response.data;
+                console.log("data", data);
                 if(status){
-                    const transformedArray = data.map((item, index) => ({
-                        key: item._id,
-                        id: item._id,
+                    const transformedArray = data.documents.map((item, index) => ({
+                        key: item.$id,
+                        id: item.$id,
                         name: item.name,
-                        image: <Image src={item.coverImage} width={40} height={40} />,
+                        image: <Image src={item.Image} width={40} height={40} />,
                         action: <>
                                     <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                                    <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => handleDeleteCategory(item._id)}>Delete</Button>
+                                    <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => handleDeleteCategory(item.$id)}>Delete</Button>
                                     <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange({...item, isActive: v})} />
                                 </>
                     }));                
-                    const {columns} = formatCategoryDataForTable(data);
+                    const {columns} = formatCategoryDataForTable(data.documents);
                     setColumns(columns);
                     setUsersList(transformedArray);
                 }
@@ -84,7 +85,7 @@ const Category = () => {
         let payload = {
             name: updatedCategory.name,
             isActive: updatedCategory.isActive,
-            _id: updatedCategory._id,
+            _id: updatedCategory.$id,
             __v: updatedCategory.__v,
         }
         try {

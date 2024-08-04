@@ -322,6 +322,11 @@ function formatPackageDataForTable(data) {
         title: 'Id',
         dataIndex: 'id',
         key: 'id',
+        render: (_, record) => {
+          return (
+            <Paragraph copyable>{record.id}</Paragraph>
+          )
+        }
       },
       {
         title: 'Weight(in grams)',

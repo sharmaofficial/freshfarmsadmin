@@ -97,7 +97,7 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
                 </Form.Item>
                 {
                     isEdit ?
-                    <Form.Item name="active" label="Category Image">
+                    <Form.Item name="active" label="Category Status">
                         <Switch
                             checked={formData.isActive}
                             onChange={v => handleChangeStatus(v)}

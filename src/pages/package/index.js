@@ -59,14 +59,14 @@ const Package = () => {
                 console.log(message);
                 if(status){
                     const transformedArray = data.map((item, index) => ({
-                        key: item._id,
-                        id: item._id,
+                        key: item.$id,
+                        id: item.$id,
                         weigth: item.name,
                         action:
                         <>
                             {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button> */}
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
-                            <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />
+                            <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item.$id)} />
                         </>
                     }));                
                     const {columns} = formatPackageDataForTable(data);

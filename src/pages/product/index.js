@@ -62,11 +62,11 @@ const Product = () => {
                 console.log(message);
                 if(status){
                     const transformedArray = data.products.map((item, index) => ({
-                        key: item._id,
-                        id: item._id,
+                        key: item.$id,
+                        id: item.$id,
                         name: item.name,
                         description: item.description,
-                        image: <Image src={item.coverImage} width={20} height={20} />,
+                        image: <Image src={item.image} width={20} height={20} />,
                         shopName: item.shopName,
                         action:
                         <>
@@ -127,7 +127,7 @@ const Product = () => {
         console.log("updatedProduct", updatedProduct);
         let payload = {
             isActive: updatedProduct.isActive,
-            _id: updatedProduct._id,
+            _id: updatedProduct.$id,
         }
         try {
             const response = await postApiCall("admin/editProduct", payload, userData.token);

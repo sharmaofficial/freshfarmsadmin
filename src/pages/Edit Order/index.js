@@ -12,8 +12,18 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
     const {userData} = useLocalStorage('user');
 
     useEffect(() => {
-        setFormData({...data})
         console.log("data", data);
+        if(typeof data.products === 'string'){
+            let newData = {
+                ...data,
+                products: JSON.parse(data.products),
+            }
+            setFormData({...newData})
+            console.log("newData", newData);
+        }else{
+            setFormData({...data})
+            console.log("data", data);
+        }
     },[data]);
 
     async function updateOrder() {
@@ -134,10 +144,10 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
                 {
                     formData.paymentDetails ?
                     <>                    
-                        <Paragraph copyable>Cashfree Order Id : {formData.paymentDetails.cf_order_id}</Paragraph>
-                        <Paragraph>Amount : {formData.paymentDetails.order_amount}</Paragraph>
-                        <Paragraph>Payment Status : {formData.paymentDetails.order_status}</Paragraph>
-                        <Paragraph>Payment link : <Text copyable>{formData.paymentDetails.payments.url}</Text></Paragraph>
+                        <Paragraph copyable>Cashfree Order Id : {formData.paymentDetails?.cf_order_id}</Paragraph>
+                        <Paragraph>Amount : {formData.paymentDetails?.order_amount}</Paragraph>
+                        <Paragraph>Payment Status : {formData.paymentDetails?.order_status}</Paragraph>
+                        <Paragraph>Payment link : <Text copyable>{formData.paymentDetails.payments?.url}</Text></Paragraph>
                     </>
                     :
                     <Paragraph>None</Paragraph>

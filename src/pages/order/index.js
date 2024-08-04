@@ -62,23 +62,26 @@ const Order = () => {
             if(userData){
                 const response = await getApiCall("admin/getOrders", userData.token);
                 const {data, status, message} = response.data;
-                console.log(data);
                 if(status){
                     const transformedArray = data.map((item, index) => {
+                        const address = JSON.parse(item?.address);
+                        const products = JSON.parse(item?.products);
+                        let parsedItem = {...item, products: products, address: address};
+
                         return {
-                            key: item?._id,
-                            id: item?._id,
+                            key: item?.$id,
+                            id: item?.$id,
                             orderId: item?.orderId,
                             dateTime: formatOrderDateTime(item?.dateTime),
-                            address: item?.address?.address,
+                            address: address?.address,
                             status: item?.orderStatus,
-                            contact: item?.address?.phoneNumber,
-                            customerName: item?.address?.name,
+                            contact: address?.phoneNumber,
+                            customerName: address?.name,
                             action:
                             <>
-                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10, marginBottom: 10}} onClick={() => {setSelectedUserToEdit(item); setShowModal(true)}}>Edit</Button>
-                                <Button danger style={{ marginRight: 10, marginBottom: 10}} onClick={() =>{ handleCancelOrderConfirm(item._id)}}>Cancel</Button>
-                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item); handleGeneratePDF(item?.orderId)}}>Generate Bill</Button>
+                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10, marginBottom: 10}} onClick={() => {setSelectedUserToEdit(parsedItem); setShowModal(true)}}>Edit</Button>
+                                <Button danger style={{ marginRight: 10, marginBottom: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button>
+                                <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() =>{setSelectedUserToEdit(parsedItem); handleGeneratePDF(item?.orderId)}}>Generate Bill</Button>
                                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                             </>
@@ -191,6 +194,7 @@ const Order = () => {
     const handleUpdateError = async(message) => {
         messageApi.error(message)
     };
+    console.log("selectedUserToEdit", selectedUserToEdit);
 
     return (
          <Layout>
