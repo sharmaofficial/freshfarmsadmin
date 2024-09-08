@@ -43,7 +43,6 @@ const Users = () => {
     const [userList, setUsersList] = useState([]);
     const [columns, setColumns] = useState([]);
     const {userData, deleteData} = useLocalStorage('user');
-    console.log(userData);
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const navigate = useNavigate()
