@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Card } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css';
-import { postApiCall } from '../utils';
+import { postApiCall, storeToken, storeUserData } from '../utils';
 import CryptoJS from 'crypto-js';
 import { useNavigate } from 'react-router-dom';
 import { useMessage } from '../utils/MessageProvider';
+import useLocalStorage from '../utils/localStorageHook';
 
 const { Title, Text } = Typography;
 
@@ -16,7 +17,7 @@ const Login = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [tempLoginData, setTempLoginData] = useState(null);
   const messageApi = useMessage();
-
+  const {saveData} = useLocalStorage('user')
   const navigate = useNavigate(); 
 
   const handleSendOtp = async () => {
@@ -46,11 +47,11 @@ const Login = () => {
       const {status, message, data} = response.data;
       if (status) {
         messageApi.success(message);
-        const { token } = data;
-        const encryptedToken = CryptoJS.AES.encrypt(token, 'freshfarms').toString();
-        localStorage.setItem('authToken', encryptedToken);
+        // storeToken(encryptedToken);
+        let temp = {...data};
+        delete temp?.token;
+        storeUserData(data)
         // Optionally store user data (encrypted if necessary)
-        localStorage.setItem('userData', JSON.stringify(data));
 
         messageApi.success('Login successful! Redirecting to dashboard...');
         

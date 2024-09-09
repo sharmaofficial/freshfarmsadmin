@@ -10,6 +10,7 @@ import User from '../pages/User';
 import Settings from '../pages/Settings';
 
 const AppRoutes = () => {
+  console.log("isAuthenticated()", isAuthenticated());
   return (
     <MessageProvider>
       <Router>

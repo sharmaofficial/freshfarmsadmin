@@ -3,9 +3,8 @@ import { Table, Button, Modal, Form, Input, Popconfirm, message, Switch } from '
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import useLocalStorage from '../utils/localStorageHook';
 import { useNavigate } from 'react-router-dom';
-import { getApiCall, postApiCall } from '../utils';
+import { getApiCall, getToken, getUserData, postApiCall } from '../utils';
 import { useMessage } from '../utils/MessageProvider';
-
 // Sample user data for the table
 const sampleUsers = [
   {
@@ -24,53 +23,16 @@ const sampleUsers = [
 ];
 
 const Users = () => {
-    const [users, setUsers] = useState([]);
-    const [editingUser, setEditingUser] = useState(null);
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-    const messageAPI = useMessage()
+  const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const messageAPI = useMessage();
+  const user = getUserData();
+  console.log("user", user);
 
-    const [loading, setLoading] = useState(false);
-    const [columns, setColumns] = useState([
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-      },
-      {
-        title: 'Role',
-        dataIndex: 'role',
-        key: 'role',
-      },
-      {
-        title: 'Actions',
-        key: 'actions',
-        render: (text, record) => (
-          <div>
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
-              style={{ marginRight: 8 }}
-            />
-            <Popconfirm
-              title="Are you sure you want to delete this user?"
-              onConfirm={() => handleDelete(record.key)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button icon={<DeleteOutlined />} />
-            </Popconfirm>
-          </div>
-        ),
-      },
-    ]
-  );
-  const {userData, deleteData} = useLocalStorage('userData');
+  const [loading, setLoading] = useState(false);
+  const [columns, setColumns] = useState();
   const [form] = Form.useForm();
 
   const getUserColumns = () => [
@@ -117,14 +79,6 @@ const Users = () => {
             onClick={() => handleEdit(record)}
             style={{ marginRight: 8 }}
           />
-          <Popconfirm
-            title="Are you sure you want to delete this user?"
-            onConfirm={() => handleDelete(record.$id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button icon={<DeleteOutlined />} />
-          </Popconfirm>
         </div>
       ),
     },
@@ -134,7 +88,7 @@ const Users = () => {
     setLoading(true);
     let payload =  {isActive : !status, userId};
     try {
-      const response = await postApiCall("admin/updateUserStatus", payload, userData.token);
+      const response = await postApiCall("admin/updateUserStatus", payload, user.token);
       const {data, status, message} = response.data;
       console.log("status", status);
       if(status){
@@ -148,15 +102,6 @@ const Users = () => {
         console.log("temp", temp);
         setUsers(temp);
         messageAPI.success(message);
-        // setUsers(users.map(user => {
-        //   if (user.$id === userId) {
-        //     console.log("user.status ", user.status);
-        //     console.log("{ ...user, status: !user.status }", { ...user, status: !user.status });
-        //     // Create a new user object with toggled status
-        //     return { ...user, status: !user.status };
-        //   }
-        //   return user;
-        // }));
       }else {
         messageAPI.warning(message);
       }
@@ -169,13 +114,13 @@ const Users = () => {
 
   useEffect(() => {
     getUsersList();
-  },[userData]);
+  }, []);
 
   async function getUsersList() {
     setLoading(true);
     try {
-        if(userData){
-            const response = await getApiCall("", userData.token);
+        if(user.token){
+            const response = await getApiCall("", user.token);
             const {data, status, message} = response.data;
             if(status){
                 setColumns(getUserColumns());
@@ -183,11 +128,11 @@ const Users = () => {
             }
             messageAPI.success(message)
         }
-        setLoading(false);
     } catch (error) {
         console.log("error", error);
         messageAPI.error(error.message)
-        setLoading(false);
+    } finally {
+      setLoading(false);
     }
 };
 

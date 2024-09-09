@@ -3,8 +3,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-// const BASE_URL = `http://192.168.1.190:8080/`
-const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+const BASE_URL = `http://192.168.1.107:8080/`
+// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 // const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token) => {
@@ -421,7 +421,7 @@ function formatOrderDateTime(dateTime) {
 }
 
 export const isAuthenticated = () => {
-  const encryptedToken = localStorage.getItem('authToken');
+  const encryptedToken = localStorage.getItem('user');
   if (!encryptedToken) return false;
 
   try {
@@ -434,6 +434,31 @@ export const isAuthenticated = () => {
   }
 };
 
+const storeToken = (token) => {
+  // const encryptedToken = CryptoJS.AES.encrypt(token, 'freshfarms').toString();
+  localStorage.setItem('authToken', token);
+};
+
+const getToken = () => {
+  const encryptedToken = localStorage.getItem('authToken');
+  if (!encryptedToken) return null;
+  const bytes = CryptoJS.AES.decrypt(encryptedToken, 'freshfarms');
+  const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+  return decryptedToken;
+};
+
+const storeUserData = (data) => {
+  // const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), 'freshfarms').toString();
+  localStorage.setItem('user', data);
+};
+
+const getUserData = () => {
+  const encryptedData = localStorage.getItem('user');
+  if (!encryptedData) return null;
+  const bytes = CryptoJS.AES.decrypt(encryptedData, 'freshfarms');
+  const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  return decryptedData;
+};
 
 
 export {
@@ -448,5 +473,9 @@ export {
     formatLogsDataForTable,
     encryptToken,
     decryptToken,
-    formatOrderDateTime
+    formatOrderDateTime,
+    storeToken,
+    getToken,
+    storeUserData,
+    getUserData,
 }
