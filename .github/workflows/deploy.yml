@@ -62,12 +62,16 @@ jobs:
 
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.7.0
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+        SERVER_USER: root
+        ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
       with:
         ssh-private-key: ${{ secrets.VPS_DEPLOY_KEY }}
 
     - name: Deploy code to VPS
       run: |
-        ssh -o StrictHostKeyChecking=no root@146.190.11.0 << 'EOF'
+        sshpass -p $ROOT_PASSWORD scp -o StrictHostKeyChecking=no SERVER_USER@SERVER_IP << 'EOF'
           cd freshfarmsadmin || exit
           git pull origin master
           yarn install
