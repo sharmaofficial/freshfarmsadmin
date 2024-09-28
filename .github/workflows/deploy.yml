@@ -75,7 +75,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y sshpass
         fi
-        sshpass -p "$ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no SERVER_USER@$SERVER_IP << 'EOF'
+        sshpass -p "$ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no root@$SERVER_IP << 'EOF'
           cd freshfarmsadmin || exit
           git pull origin master
           yarn install
