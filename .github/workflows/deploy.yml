@@ -68,7 +68,6 @@ jobs:
         ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
       with:
         ssh-private-key: ${{ secrets.VPS_DEPLOY_KEY }}
-
     - name: Deploy code to VPS
       run: |
 # Check if sshpass is installed, and install it if not
