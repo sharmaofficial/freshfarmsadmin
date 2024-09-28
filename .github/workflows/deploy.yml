@@ -71,7 +71,14 @@ jobs:
 
     - name: Deploy code to VPS
       run: |
-        sshpass -p $ROOT_PASSWORD scp -o StrictHostKeyChecking=no SERVER_USER@SERVER_IP << 'EOF'
+# Check if sshpass is installed, and install it if not
+        if ! command -v sshpass &> /dev/null; then
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+        fi
+
+        # Execute commands on the remote server
+        sshpass -p $ROOT_PASSWORD ssh -o StrictHostKeyChecking=no SERVER_USER@$SERVER_IP << 'EOF'
           cd freshfarmsadmin || exit
           git pull origin master
           yarn install
