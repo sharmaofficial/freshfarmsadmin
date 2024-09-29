@@ -27,7 +27,7 @@ import Category from './pages/category';
 import Order from './pages/order';
 import Product from './pages/product';
 import Package from './pages/package';
-import InventoryLog from './pages/inventoryLog';
+import InventoryLog from './pages/InventoryLog';
 import useLocalStorage from './utils/localStorageHook';
 import { ChakraProvider } from '@chakra-ui/react';
 import AddStock from './pages/AddStock';
@@ -36,7 +36,9 @@ import AppRoutes from './routes/routes';
 const App = () => {
   
   return (
+    <div>
     <AppRoutes />
+    </div>
     // <ChakraProvider>
     //   <Router>
     //     <div>
