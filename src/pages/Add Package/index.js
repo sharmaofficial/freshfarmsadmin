@@ -10,8 +10,8 @@ const AddPackage = ({onSubmit}) => {
     });
 
     return(
-        <Card style={{margin: 10}}>
-            <Title level={4} style={{marginBottom: 20}}>Add Package</Title>
+        // <Card style={{margin: 10}}>
+        //     <Title level={4} style={{marginBottom: 20}}>Add Package</Title>
             <Form name='Add Package'>
                 <Form.Item name="Package Weight" label="Package Weight">
                     <Input
@@ -22,13 +22,13 @@ const AddPackage = ({onSubmit}) => {
                         type='number'
                     />
                 </Form.Item>
-                <Form.Item>
-                    <Button onClick={() => onSubmit(formData)}>
+                <Form.Item style={{display:'flex', justifyContent:'end'}}>
+                    <Button style={{background:'#1677ff', color:'#fff'}} onClick={() => onSubmit(formData)}>
                         Submit
                     </Button>
                 </Form.Item>
             </Form>
-        </Card>
+        // </Card>
     )
 }
 

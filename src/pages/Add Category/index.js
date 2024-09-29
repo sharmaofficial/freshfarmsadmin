@@ -74,8 +74,8 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
     }
 
     return(
-        <Card style={{margin: 10}}>
-            <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Category'}</Title>
+        <Card style={{margin: 10, border:0}}>
+            {/* <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Category'}</Title> */}
             <Form ref={formRef} name={formName || 'Add Category'}>
                 <Form.Item name="Name" label="Name">
                     <Input
@@ -125,8 +125,8 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
                     :
                     null
                 }
-                <Form.Item>
-                    <Button onClick={() =>{isEdit ? onUpdate(formData) : onAdd(formData)}}>
+                <Form.Item style={{display:'flex', justifyContent:'end'}}>
+                    <Button onClick={() =>{isEdit ? onUpdate(formData) : onAdd(formData)}} style={{background:'#1677ff', color:'#fff'}}>
                         Submit
                     </Button>
                 </Form.Item>

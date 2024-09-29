@@ -105,38 +105,38 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         }
     },[preFill])
 
-    useEffect(() => {
-        let temp = categories.map(item => {
-            if(isEdit){
-                if(item._id === preFill.categoryId){
-                    setSelectedCategory({
-                        id: item._id,
-                        name: item.name
-                    })
-                }
-            }
-            return{
-                key: item._id,
-                label: item.name
-            }
-        });
-        let updatedShops = shops.map(item => {
-            if(isEdit){
-                if(item.label === preFill.shopName){
-                    setSelectedShop({
-                        id: item.key,
-                        name: item.label
-                    })
-                }
-            }
-            return{
-                key: item.key,
-                label: item.label
-            }
-        });
-        setitems(temp);
-        setShops(updatedShops);
-    },[categories, preFill]);
+    // useEffect(() => {
+    //     let temp = categories.map(item => {
+    //         if(isEdit){
+    //             if(item._id === preFill.categoryId){
+    //                 setSelectedCategory({
+    //                     id: item._id,
+    //                     name: item.name
+    //                 })
+    //             }
+    //         }
+    //         return{
+    //             key: item._id,
+    //             label: item.name
+    //         }
+    //     });
+    //     let updatedShops = shops.map(item => {
+    //         if(isEdit){
+    //             if(item.label === preFill.shopName){
+    //                 setSelectedShop({
+    //                     id: item.key,
+    //                     name: item.label
+    //                 })
+    //             }
+    //         }
+    //         return{
+    //             key: item.key,
+    //             label: item.label
+    //         }
+    //     });
+    //     setitems(temp);
+    //     setShops(updatedShops);
+    // },[categories, preFill]);
 
     function handleMenuClick(e) {
         console.log(e.key);
@@ -205,8 +205,8 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
     }
 
     return(
-        <Card style={{margin: 10}}>
-            <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Product'}</Title>
+        <Card style={{margin: 10, border:0}}>
+            {/* <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Product'}</Title> */}
             <div style={{marginBottom: 20}}>
                 <Dropdown
                     menu={menuProps}
@@ -298,8 +298,8 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                     :
                     null
                 }
-                <Form.Item>
-                    <Button onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}}>
+                <Form.Item style={{display:'flex', justifyContent:'end'}}>
+                    <Button onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}} style={{background:'#1677ff', color:"#fff"}}>
                         Submit
                     </Button>
                 </Form.Item>

@@ -3,9 +3,9 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-const BASE_URL = `http://192.168.1.107:8080/`
-// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
-// const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
+// const BASE_URL = `http://192.168.1.107:8080/`
+const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token) => {
   return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token}});
@@ -171,6 +171,11 @@ function formatOrdersDataForTable(data) {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+      },
+      {
+        title: 'Options',
+        dataIndex: 'options',
+        key: 'options',
       },
   ];
 
@@ -354,11 +359,11 @@ function formatPackageDataForTable(data) {
 function formatLogsDataForTable(data) {
 
   const columns = [
-      {
-        title: 'Log Id',
-        dataIndex: 'id',
-        key: 'id',
-      },
+      // {
+      //   title: 'Id',
+      //   dataIndex: 'id'
+      //   key: 'id',
+      // },
       {
         title: 'Order Id',
         dataIndex: 'orderId',
@@ -380,6 +385,10 @@ function formatLogsDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
+      },
+      {
+        title: 'Order type',
+        dataIndex: 'orderType'
       },
       {
         title: 'Action',
@@ -420,6 +429,28 @@ function formatOrderDateTime(dateTime) {
   }
 }
 
+function formatInventoryDateTime(dateTime){
+  if (dateTime) {
+    const inputDate = new Date(dateTime);
+    
+    if (isNaN(inputDate.getTime())) {
+      return '-'; // Return '-' if the date is invalid
+    }
+
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+    };
+    const formattedDate = inputDate.toLocaleDateString('en-US', options);
+    const formattedTime = inputDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    
+    return `${formattedDate} at ${formattedTime}`;
+  } else {
+    return '-';
+  }
+}
+
 export const isAuthenticated = () => {
   const encryptedToken = localStorage.getItem('user');
   if (!encryptedToken) return false;
@@ -453,6 +484,7 @@ const storeUserData = (data) => {
 };
 
 const getUserData = () => {
+  console.log("Called user data get")
   const encryptedData = localStorage.getItem('user');
   if (!encryptedData) return null;
   const bytes = CryptoJS.AES.decrypt(encryptedData, 'freshfarms');
@@ -471,6 +503,7 @@ export {
     formatProductDataForTable,
     formatPackageDataForTable,
     formatLogsDataForTable,
+    formatInventoryDateTime,
     encryptToken,
     decryptToken,
     formatOrderDateTime,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Layout, Menu, Popconfirm } from 'antd';
-import { DashboardOutlined, UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, SettingOutlined, LogoutOutlined, ProductOutlined,TruckOutlined , AppstoreAddOutlined, ShopOutlined, PercentageOutlined} from '@ant-design/icons';
 
 const { Sider } = Layout;
 
@@ -26,6 +26,36 @@ const Sidebar = ({collapsed, toggleCollapsed}) => {
         <Menu.Item key="3" icon={<SettingOutlined />}>
           <Link to="/dashboard/settings">Settings</Link> {/* Correct link to /dashboard/settings */}
         </Menu.Item>
+        <Menu.Item key="4" icon={<ProductOutlined />}>
+          <Link to="/dashboard/products">Product</Link> {/* Correct link to /dashboard/settings */}
+        </Menu.Item>
+        {/* <Menu.Item key="5" icon={<SettingOutlined />}> */}
+          {/* <Link to="/dashboard/productsOld">ProductOld</Link> */}
+        {/* </Menu.Item> */}
+        <Menu.Item key="6" icon={<AppstoreAddOutlined />}>
+          <Link to="/dashboard/categories">Categories</Link>
+        </Menu.Item>
+        {/* <Menu.Item key="7" icon={<SettingOutlined />}>
+          <Link to="/dashboard/categoriesold">Categories Old</Link> 
+        </Menu.Item> */}
+        <Menu.Item key="8" icon={<ShopOutlined />}>
+          <Link to="/dashboard/inventory">Inventory Log</Link>
+        </Menu.Item>
+        {/* <Menu.Item key="9" icon={<SettingOutlined />}>
+          <Link to="/dashboard/inventoryold">Inventory Log old</Link>
+        </Menu.Item> */}
+        <Menu.Item key="10" icon={<TruckOutlined />}>
+          <Link to="/dashboard/orders">Orders</Link> {/* Correct link to /dashboard/settings */}
+        </Menu.Item>
+        {/* <Menu.Item key="11" icon={<SettingOutlined />}>
+          <Link to="/dashboard/ordersold">OrdersOld</Link>
+        </Menu.Item> */}
+        <Menu.Item key="12" icon={<PercentageOutlined />}>
+          <Link to="/dashboard/packages">Packages</Link> {/* Correct link to /dashboard/settings */}
+        </Menu.Item>
+        {/* <Menu.Item key="13" icon={<SettingOutlined />}>
+          <Link to="/dashboard/packagesold">Packages Old</Link>
+        </Menu.Item> */}
         <Menu.Item
           key="logout"
         >

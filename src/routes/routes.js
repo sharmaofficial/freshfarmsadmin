@@ -8,11 +8,21 @@ import ProtectedRoute from './ProtectedRoute';
 import { MessageProvider } from '../utils/MessageProvider';
 import User from '../pages/User';
 import Settings from '../pages/Settings';
+import AddProduct from '../pages/Add Product';
+import Product from '../pages/product';
+import Products from '../pages/Products';
+import InventoryLog from '../pages/InventoryLog';
+import Order from '../pages/order';
+import Category from '../pages/category';
+import Package from '../pages/package';
+import Categories from '../pages/Categories';
+import Orders from '../pages/Orders';
+import Packages from '../pages/Packages';
 
 const AppRoutes = () => {
   console.log("isAuthenticated()", isAuthenticated());
   return (
-    <MessageProvider>
+    <MessageProvider style={{backgroundColor:'red'}}>
       <Router>
         <Routes>
           {/* Redirect "/" based on authentication */}
@@ -32,6 +42,16 @@ const AppRoutes = () => {
             {/* Nested routes inside dashboard (Note: No leading '/' in nested paths) */}
             <Route path="users" element={<User />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="products" element={<Products />} />
+            {/* <Route path="productsOld" element={<Product />} /> */}
+            <Route path="categories" element={<Categories />} />
+            {/* <Route path="categoriesold" element={<Category />} /> */}
+            <Route path="inventory" element={<InventoryLog />} />
+            {/* <Route path="inventoryold" element={<InventoryLog/>} /> */}
+            <Route path="orders" element={<Orders/>} />
+            {/* <Route path="ordersold" element={<Order/>} /> */}
+            <Route path="packages" element={<Packages/>} />
+            {/* <Route path="packagesold" element={<Package/>} /> */}
           </Route>
 
           {/* Catch-all route for 404 Not Found */}
