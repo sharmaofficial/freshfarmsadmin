@@ -72,7 +72,7 @@ const InventoryLog = () => {
     };
 
     return(
-        <div>
+        <div style={{minWidth:'24cm'}}>
         <h1>Inventory Logs</h1>
         <Button
         type="primary"

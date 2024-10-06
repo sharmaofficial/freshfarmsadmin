@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Button } from 'antd';
 import { Link, Outlet } from 'react-router-dom'; // Import Link for navigation and Outlet for rendering child routes
+// import image from '../assets/images/farmImage1.webp'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -24,20 +25,16 @@ const Dashboard = () => {
       {/* Side Drawer (Sider) */}
       <Sidebar collapsed={collapsed} toggleCollapsed={toggleCollapsed}/>
 
-      {/* Main Layout */}
+      {/* Main Layout */} 
       <Layout className="site-layout" style={{width:'auto'}}>
         {/* Header */}
         <Header className="site-layout-background" style={{
                         backgroundImage: `url(${process.env.PUBLIC_URL}/farmImage1.webp)`,
-                        backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        height: '90px',  // Increased height to better display the image
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        height: '90px',  // Increased height to better display the image,
                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                         color: '#2f4d39',
-                        textAlign: 'center', padding: '0 20px', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        textAlign: 'center', padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}

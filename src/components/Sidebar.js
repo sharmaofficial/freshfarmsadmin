@@ -12,7 +12,7 @@ const Sidebar = ({collapsed, toggleCollapsed}) => {
     navigate('/');
   };
   return (
-    <Sider collapsible collapsed={collapsed}>
+    <Sider trigger={null} collapsible collapsed={collapsed} >
     <div className="logo" style={{ color: 'white', padding: '20px', textAlign: 'center' }}>
       Admin
     </div>
@@ -58,6 +58,8 @@ const Sidebar = ({collapsed, toggleCollapsed}) => {
         </Menu.Item> */}
         <Menu.Item
           key="logout"
+          icon={<LogoutOutlined />}
+          style={{backgroundColor:'#ff4d4f'}}
         >
           <Popconfirm
             title="Are you sure you want to logout?"
@@ -65,7 +67,8 @@ const Sidebar = ({collapsed, toggleCollapsed}) => {
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<LogoutOutlined />}  title='Logout'>Logout</Button>
+            {/* <Button icon={<LogoutOutlined />}  title='Logout'>Logout</Button> */}
+            <div>Logout</div>
           </Popconfirm>
         </Menu.Item>
       </Menu>

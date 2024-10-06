@@ -10,7 +10,7 @@ const Settings = () => {
   };
 
   return (
-    <div>
+    <div style={{minWidth:'24cm'}}>
       <h1>Settings</h1>
       <Form form={form} layout="vertical" onFinish={handleSave}>
         <Form.Item

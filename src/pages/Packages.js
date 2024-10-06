@@ -41,7 +41,7 @@ const Packages = () => {
                         action:
                         <>
                             <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                            <Button danger style={{backgroundColor:'#f2564b', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                            <Button danger style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
                             {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item.$id)} /> */}
                         </>
                     }));                
@@ -85,7 +85,7 @@ const Packages = () => {
     }
     
     return(
-        <div>
+        <div style={{minWidth:'24cm'}}>
        <h1>Packages</h1>
         <Button
         type="primary"
