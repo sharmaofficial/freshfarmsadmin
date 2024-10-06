@@ -8,6 +8,7 @@ const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token) => {
+  // debugger
   return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token}});
 }
 
@@ -92,7 +93,7 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.orderId?.includes(value)
         },
-        width: '30%',
+        width: '60%',
         render: (_, record) => {
           return (
             <Paragraph copyable>{record.orderId}</Paragraph>
@@ -109,7 +110,7 @@ function formatOrdersDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
-        width: '25%',
+        width: '30%',
       },
       {
         title: 'Delivery Address',
@@ -127,7 +128,7 @@ function formatOrdersDataForTable(data) {
             <>
               <Paragraph>Name: {record?.customerName}</Paragraph>
               <Paragraph copyable>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
-              <Paragraph copyable>{record?.address}</Paragraph>
+              <Paragraph ellipsis= {{rows:2, expandable:true}}copyable>{record?.address}</Paragraph>
             </>
           )
         }

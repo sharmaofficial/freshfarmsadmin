@@ -106,7 +106,7 @@ const Categories = () => {
     }
 
     return(
-        <>
+        <div style={{minWidth:'24cm'}}>
         <h1>Categories</h1>
         <Button
         type="primary"
@@ -120,7 +120,7 @@ const Categories = () => {
         title={() => 'Categories'}
         loading={loading} 
         dataSource={userList} 
-        columns={columns} 
+        columns={columns}
         />
      <Modal
         title={editingProduct ? 'Edit Product' : 'Add Product'}
@@ -134,7 +134,7 @@ const Categories = () => {
       >
         <AddCategory categories = {categories} onAdd = {(data)=>handleAddCategory(data)} />
       </Modal>
-        </>
+        </div>
     )
 }
 export default Categories;

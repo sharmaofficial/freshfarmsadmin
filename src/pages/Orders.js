@@ -92,7 +92,7 @@ const Orders = () => {
     }
     
     return(
-        <div>
+        <div style={{minWidth:'30cm'}}>
         <h1>Orders</h1>
         <Button
         type="primary"

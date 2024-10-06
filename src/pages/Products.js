@@ -96,7 +96,7 @@ const Products = () => {
 
     async function handleAddProduct(formData) {
         console.log("formData", formData);
-        debugger
+        // debugger
         try {
             const response = await postApiCall("admin/addProduct", formData, user.token);
             const {data, message, status} = response.data;
@@ -119,7 +119,7 @@ const Products = () => {
     }
     
     return(
-        <div style={{width:'auto'}}>
+        <div>
         <h1>Products</h1>
         <Button
         type="primary"
