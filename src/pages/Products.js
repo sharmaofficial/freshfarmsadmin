@@ -96,9 +96,9 @@ const Products = () => {
 
     async function handleAddProduct(formData) {
         console.log("formData", formData);
-        // debugger
         try {
             const response = await postApiCall("admin/addProduct", formData, user.token);
+            console.log("response", response);
             const {data, message, status} = response.data;
             console.log("Data", data);
             console.log("message", message)
