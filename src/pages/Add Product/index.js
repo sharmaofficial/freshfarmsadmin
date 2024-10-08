@@ -107,7 +107,6 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
 
     useEffect(() => {
         let temp = categories.map(item => {
-            debugger
             if(isEdit){
                 if(item._id === preFill.categoryId){
                     setSelectedCategory({
@@ -141,7 +140,6 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
 
     function handleMenuClick(e) {
         console.log(e.key);
-        debugger
         items.map(category => {
             if(category.key === e.key){
                 setSelectedCategory({

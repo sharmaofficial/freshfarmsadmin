@@ -60,7 +60,6 @@ const Categories = () => {
 
     async function handleAddCategory(updatedCategory) {
         console.log("updatedCategory", updatedCategory);
-        debugger
         let payload = {
             name: updatedCategory.name,
             isActive: updatedCategory.isActive,
