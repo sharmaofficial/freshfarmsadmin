@@ -1,5 +1,5 @@
 
-import { Button, Drawer, Form, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
+import { Alert, Button, Drawer, Form, Image, Layout, List, Modal, Switch, Table, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -16,7 +16,8 @@ const Packages = () => {
     const [columns, setColumns] = useState([]);
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = message.useMessage();       
+    const [showAddAlertSuccess, setShowAddAlertSuccess] = useState(false);
 
     const [form] = Form.useForm();
 
@@ -59,6 +60,11 @@ const Packages = () => {
 
     async function handleAddPackage(formData) {
         try {
+            if(parseInt(formData.name)<=0){
+                console.log("ERRORRRRR");  
+            }
+            else{
+
             console.log(formData, 'formdata');
             const response = await postApiCall("admin/addPackage", formData, user.token);
             const {data, message, status} = response.data;
@@ -67,12 +73,16 @@ const Packages = () => {
             if(status){
                 messageApi.success(message);
                 getUsersList();
+                setIsAddModalVisible(false)
+                setShowAddAlertSuccess(true)
                 
                 //TODO: Api return the updated data row, use this instead of calling the api again
                 // setUsersList([...userList, data]);
             }else{
                 messageApi.error(message)
+                setIsAddModalVisible(false)
             }
+        }
         } catch (error) {
             console.log(error);
             messageApi.error(message)
@@ -86,6 +96,17 @@ const Packages = () => {
     
     return(
         <div style={{minWidth:'24cm'}}>
+        {
+            showAddAlertSuccess&& (
+                <Alert
+                message="Package Successfully added!"
+                type='success'
+                closable = {true}
+                showIcon={true}
+                onClose={()=>setShowAddAlertSuccess(false)}
+                />
+            )
+        }
        <h1>Packages</h1>
         <Button
         type="primary"
@@ -102,7 +123,7 @@ const Packages = () => {
         columns={columns} 
         />
     <Modal
-        title={"Add New Category"}
+        title={"Add New Package"}
         open={isAddModalVisible}
         footer={null}
         onCancel={() => {
@@ -114,7 +135,6 @@ const Packages = () => {
       >
         <AddPackage onSubmit = {(data)=>handleAddPackage(data)} />
       </Modal>
-
         </div>
     )
 }

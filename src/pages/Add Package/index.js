@@ -20,10 +20,13 @@ const AddPackage = ({onSubmit}) => {
                         onChange={(e) => setFormaData({...formData, name: e.target.value})}
                         value={formData.name}
                         type='number'
+                        suffix='gms'
+                        max={"100000"}
+                        min={"1"}
                     />
                 </Form.Item>
                 <Form.Item style={{display:'flex', justifyContent:'end'}}>
-                    <Button style={{background:'#1677ff', color:'#fff'}} onClick={() => onSubmit(formData)}>
+                    <Button style={{background:'#1677ff', color:'#fff'}} onClick={() => onSubmit(formData)} disabled={parseInt(formData.name)<=0}>
                         Submit
                     </Button>
                 </Form.Item>
