@@ -61,9 +61,12 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
 
     const [formData, setFormaData] = useState({
         name: "",
-        coverImage: null,
-        categoryId: "",
-        shopName: "",
+        // coverImage: null,
+        // categoryId: "",
+        category:"",
+        associated_shop:"66c9a7ee003b7882be2c",
+        productType: "66c9a86d001f504c1886",
+        // shopName: "",
         image:{
             type: ""
         },
@@ -151,7 +154,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         setFormaData(
             {
                 ...formData,
-                categoryId: e.key
+                category: e.key
             }
         )
     }
@@ -167,7 +170,10 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         setFormaData(
             {
                 ...formData,
-                shopName: label
+                // shopName: label
+                associated_shop: "66c9a7ee003b7882be2c",
+                productType: "66c9a86d001f504c1886",
+                
             }
         )
     }
@@ -183,7 +189,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
 
         setFormaData({
             ...formData,
-            coverImage: base64Data,
+            // coverImage: base64Data,
             image: {
                 type: event.target.files[0].type
             }
@@ -282,7 +288,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                         required
                     />
                 </Form.Item>
-                {
+                {/* {
                     isEdit ?
                     !isTouched ?
                     <div style={{marginTop: 10, marginBottom: 10}}>                        
@@ -300,7 +306,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                     </div>
                     :
                     null
-                }
+                } */}
                 <Form.Item style={{display:'flex', justifyContent:'end'}}>
                     <Button onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}} style={{background:'#1677ff', color:"#fff"}}>
                         Submit
