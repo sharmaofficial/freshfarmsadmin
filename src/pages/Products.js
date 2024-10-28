@@ -96,15 +96,25 @@ const Products = () => {
 
     async function handleAddProduct(formData) {
         console.log("formData", formData);
+
+        const payload = new FormData();
+       await Object.keys(formData).forEach((key)=>{
+            payload.append(key, formData[key]);
+            // console.log(key,"key");
+            
+        })
+        for (let [key, value] of payload.entries()) {
+            console.log(`${key}: ${value}`);
+          }
+        // debugger
         try {
-            const response = await postApiCall("admin/addProduct", formData, user.token);
+            const response = await postApiCall("admin/addProduct", payload, user.token);
             console.log("response", response);
             const {data, message, status} = response.data;
             console.log("Data", data);
             console.log("message", message)
             if(status){
                 messageApi.success(message);
-                console.log()
                 getUsersList();
                 
                 //TODO: Api return the updated data row, use this instead of calling the api again

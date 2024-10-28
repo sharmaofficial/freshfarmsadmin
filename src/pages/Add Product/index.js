@@ -190,9 +190,11 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         setFormaData({
             ...formData,
             // coverImage: base64Data,
-            image: {
-                type: event.target.files[0].type
-            }
+            image: event.target.files[0]
+            // {
+            //     type: event.target.files[0].type,
+            //     data:base64Data
+            // }
         });
         setIsTouched(true);
     }
