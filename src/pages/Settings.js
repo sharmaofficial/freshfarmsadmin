@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Switch, Alert } from 'antd';
 
 const Settings = () => {
   const [form] = Form.useForm();
@@ -9,6 +9,10 @@ const Settings = () => {
     // Simulate saving settings (e.g., via API)
   };
 
+  const setMaintenance = (flag) => {
+    console.log(flag,"maintaenence");
+  } 
+  
   return (
     <div style={{minWidth:'24cm'}}>
       <h1>Settings</h1>
@@ -27,6 +31,15 @@ const Settings = () => {
           rules={[{ required: true, message: 'Please enter the admin email' }]}
         >
           <Input placeholder="Enter admin email" />
+        </Form.Item>
+        <Form.Item
+          label="Switch to maintenance"
+        >
+          <Switch
+            checkedChildren="On"
+            unCheckedChildren="Off"
+            onChange={(e)=>setMaintenance(e)}
+          />
         </Form.Item>
 
         <Form.Item>
