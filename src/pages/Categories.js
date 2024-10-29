@@ -43,7 +43,7 @@ const Categories = () => {
                         image: <Image src={item.Image} width={40} height={40} />,
                         action: <>
                                     <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedCategoryToEdit(item)}>Edit</Button>
-                                    <Button danger style={ {marginRight: 10}} /*onClick={() => handleDeleteCategory(item.$id)}*/>Delete</Button>
+                                    <Button danger style={ {marginRight: 10}} onClick={() => handleDeleteCategory(item.$id)}>Delete</Button>
                                     {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange({...item, isActive: v})} /> */}
                                 </>
                     }));                
@@ -58,6 +58,25 @@ const Categories = () => {
             setLoading(false);
         }
     };
+
+    async function handleDeleteCategory(categoryId) {
+        try {
+            const response = await postApiCall("admin/deleteCategory", {id: categoryId}, user.token, false);
+            const {data, message, status} = response.data;
+            console.log(data);
+            console.log(message);
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+            }else{
+            console.log(message);
+                messageApi.error(message)
+            }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
 
     async function handleAddCategory(formData) {
         // console.log("updatedCategory", updatedCategory);
@@ -93,6 +112,8 @@ const Categories = () => {
                 // console.log("temp", temp);
                 // setUsersList(temp);
             }else{
+            console.log(message);
+
                 messageApi.error(message)
             }
         } catch (error) {
