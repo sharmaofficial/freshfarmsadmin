@@ -71,7 +71,7 @@ const Product = () => {
                         action:
                         <>
                             <Button style={{backgroundColor:'#2ecc72', color:'#fff', marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                            <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                            <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => alert(item.$id)}>Delete</Button>
                             <Switch checked={item.isActive} onChange={(v) => handleProductStateChange({...item, isActive: v})} />
                         </>
                     }));                

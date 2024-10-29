@@ -54,7 +54,7 @@ const Products = () => {
                         action:
                         <>
                             <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedItemToEdit(item)}>Edit</Button>
-                            <Button danger onClick={() => setSelectedItemToEdit(item)}>Delete</Button>
+                            <Button danger onClick={() => handleDeleteProduct(item.$id)}>Delete</Button>
                             {/* <Switch style={{marginLeft:10}} checked={item.isActive} onChange={(v) => handleProductStateChange({...item, isActive: v})} /> */}
                         </>
                     }));                
@@ -96,23 +96,9 @@ const Products = () => {
 
     async function handleAddProduct(formData) {
         console.log("formData", formData);
-
-        const payload = new FormData();
-       await Object.keys(formData).forEach((key)=>{
-            payload.append(key, formData[key]);
-            // console.log(key,"key");
-            
-        })
-        for (let [key, value] of payload.entries()) {
-            console.log(`${key}: ${value}`);
-          }
-        // debugger
         try {
-            const response = await postApiCall("admin/addProduct", payload, user.token);
-            console.log("response", response);
+            const response = await postApiCall("admin/addProduct", formData, user.token, true);
             const {data, message, status} = response.data;
-            console.log("Data", data);
-            console.log("message", message)
             if(status){
                 messageApi.success(message);
                 getUsersList();
@@ -126,6 +112,25 @@ const Products = () => {
             console.log(error);
             messageApi.error(message)
         }
+    }
+
+    async function handleDeleteProduct(productId) {
+        try {
+          const response = await postApiCall("admin/deleteProduct", {id: productId}, user.token, false);
+          const {data, message, status} = response.data;
+          console.log(data);
+          console.log(message);
+          if(status){
+              messageApi.success(message);
+              getUsersList();
+          }else{
+          console.log(message);
+              messageApi.error(message)
+          }
+      } catch (error) {
+          console.log(error);
+          messageApi.error(message)
+      }
     }
     
     return(
