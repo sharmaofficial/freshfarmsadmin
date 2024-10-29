@@ -26,7 +26,7 @@ const AddPackage = ({onSubmit}) => {
                     />
                 </Form.Item>
                 <Form.Item style={{display:'flex', justifyContent:'end'}}>
-                    <Button style={{background:'#1677ff', color:'#fff'}} onClick={() => onSubmit(formData)} disabled={parseInt(formData.name)<=0}>
+                    <Button style={{background:'#1677ff', color:'#fff'}} onClick={() => onSubmit(formData)} disabled={parseInt(formData.name)<=0 || !formData.name}>
                         Submit
                     </Button>
                 </Form.Item>

@@ -67,9 +67,10 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         associated_shop:"66c9a7ee003b7882be2c",
         productType: "66c9a86d001f504c1886",
         // shopName: "",
-        image:{
-            type: ""
-        },
+        image:{},
+        // image:{
+        //     type: ""
+        // },
         description: "",
         estimated_delivery: "",
         price: 0

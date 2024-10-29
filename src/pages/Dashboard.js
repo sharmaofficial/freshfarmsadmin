@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu, Button, Card } from 'antd';
 import { Link, Outlet } from 'react-router-dom'; // Import Link for navigation and Outlet for rendering child routes
 // import image from '../assets/images/farmImage1.webp'
 import {
@@ -10,6 +10,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import Sidebar from '../components/Sidebar';
+import Graph from './Graphs';
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -54,6 +55,7 @@ const Dashboard = () => {
         {/* Content */}
         <Content style={{ margin: '16px', padding: '24px', background: '#fff', minHeight: 280 }}>
           <Outlet /> {/* This renders the selected page content */}
+          <Graph/>
         </Content>
 
         {/* Footer */}

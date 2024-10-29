@@ -18,6 +18,7 @@ const Packages = () => {
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const [messageApi, contextHolder] = message.useMessage();       
     const [showAddAlertSuccess, setShowAddAlertSuccess] = useState(false);
+    const [showErrorAddFail, setErrorAddFail] = useState(false)
 
     const [form] = Form.useForm();
 
@@ -63,6 +64,9 @@ const Packages = () => {
             if(parseInt(formData.name)<=0){
                 console.log("ERRORRRRR");  
             }
+            else if(!formData){
+                alert("Enter")
+            }
             else{
 
             console.log(formData, 'formdata');
@@ -80,18 +84,21 @@ const Packages = () => {
                 // setUsersList([...userList, data]);
             }else{
                 messageApi.error(message)
-                setIsAddModalVisible(false)
+                showErrorAddFail(true)
+                // setIsAddModalVisible(false)
             }
         }
         } catch (error) {
             console.log(error);
             messageApi.error(message)
+            setErrorAddFail(true)
         }
     }
 
     const showAddPackagesModal= () => {
         form.resetFields();
         setIsAddModalVisible(true);
+
     }
     
     return(
@@ -104,6 +111,17 @@ const Packages = () => {
                 closable = {true}
                 showIcon={true}
                 onClose={()=>setShowAddAlertSuccess(false)}
+                />
+            )
+        }
+        {
+            showErrorAddFail&& (
+                <Alert
+                message=" Create package failed!!! Try after sometime or contact your Administrator"
+                type='error'
+                closable = {true}
+                showIcon={true}
+                onClose={()=>setErrorAddFail(false)}
                 />
             )
         }
