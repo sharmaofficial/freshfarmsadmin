@@ -11,10 +11,11 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
     const [isTouched, setIsTouched] = useState(false);
     const [formData, setFormaData] = useState({
         name: "",
-        coverImage: null,
-        image:{
-            type: ""
-        }
+        // coverImage: null,
+        Image:{}
+        // image:{
+        //     type: ""
+        // }
     });
 
     useEffect(() => {
@@ -45,10 +46,11 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
 
         setFormaData({
             ...formData,
-            coverImage: base64Data,
-            image: {
-                type: event.target.files[0].type
-            }
+            // coverImage: base64Data,
+            Image:event.target.files[0]
+            // image: {
+            //     type: event.target.files[0].type
+            // }
         });
         setIsTouched(true);
     }

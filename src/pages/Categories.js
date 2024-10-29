@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { formatProductDataForTable, getUserData, formatCategoryDataForTable, getApiCall, postApiCall } from '../utils';
 import AddCategory from './Add Category';
+import axios from 'axios';
 
 const Categories = () => {
     const user = getUserData();
@@ -17,7 +18,7 @@ const Categories = () => {
     const [editingProduct, setEditingProduct] = useState(null);
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    const [selectedCategoryToEdit, setSelectedCategoryToEdit] = useState(null);
     const [messageApi, contextHolder] = message.useMessage();
 
     const [form] = Form.useForm();
@@ -41,7 +42,7 @@ const Categories = () => {
                         name: item.name,
                         image: <Image src={item.Image} width={40} height={40} />,
                         action: <>
-                                    <Button color="primary" variant="outlined" style={{ marginRight: 10}} /*onClick={() => setSelectedUserToEdit(item)}*/>Edit</Button>
+                                    <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedCategoryToEdit(item)}>Edit</Button>
                                     <Button danger style={ {marginRight: 10}} /*onClick={() => handleDeleteCategory(item.$id)}*/>Delete</Button>
                                     {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange({...item, isActive: v})} /> */}
                                 </>
@@ -58,16 +59,17 @@ const Categories = () => {
         }
     };
 
-    async function handleAddCategory(updatedCategory) {
-        console.log("updatedCategory", updatedCategory);
-        let payload = {
-            name: updatedCategory.name,
-            isActive: updatedCategory.isActive,
-            _id: updatedCategory.$id,
-            __v: updatedCategory.__v,
-        }
+    async function handleAddCategory(formData) {
+        // console.log("updatedCategory", updatedCategory);
+        // debugger
+        // let payload = {
+        //     name: updatedCategory.name,
+        //     isActive: updatedCategory.isActive,
+        //     _id: updatedCategory.$id,
+        //     __v: updatedCategory.__v,
+        // }
         try {
-            const response = await postApiCall("admin/editCategory", payload, user.token);
+            const response = await postApiCall("admin/addCategory", formData, user.token, true);
             const {data, message, status} = response.data;
             console.log(data);
             console.log(message);
@@ -93,6 +95,26 @@ const Categories = () => {
             }else{
                 messageApi.error(message)
             }
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
+
+    async function handleEditCategory(editParams) {
+        try {
+            const response = await postApiCall("admin/editCategory", editParams, user.token, true);
+            const {data, message, status} = response.data;
+            console.log(data);
+            console.log(message);
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+
+            }else{
+                messageApi.error(message)
+            }
+
         } catch (error) {
             console.log(error);
             messageApi.error(message)
@@ -131,7 +153,7 @@ const Categories = () => {
           setEditingProduct(null);
         }}
       >
-        <AddCategory categories = {categories} onAdd = {(data)=>handleAddCategory(data)} />
+        <AddCategory  onAdd = {(data)=>handleAddCategory(data)} preFill={false}/>
       </Modal>
         </div>
     )
