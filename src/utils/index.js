@@ -3,13 +3,13 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-// const BASE_URL = `http://localhost:8080/`
+// const BASE_URL = `http://192.168.1.107:8080/`
 const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
-const postApiCall = async(path, params, token) => {
+const postApiCall = async(path, params, token, isFormData) => {
   // debugger
-  return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token}});
+  return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token, "Content-Type": isFormData?"multipart/form-data": "application/json"}});
 }
 
 const putApiCall = async(path, params, token) => {
