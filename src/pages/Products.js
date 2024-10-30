@@ -18,6 +18,7 @@ const Products = () => {
     const [columns, setColumns] = useState([]);
     const [visible, setVisible] = useState(false);
     const [selectedItemToEdit, setSelectedItemToEdit] = useState(null);
+    const [editPrefill, setEditPrefill] = useState({});
     const [messageApi, contextHolder] = message.useMessage();
 
     const [form] = Form.useForm();
@@ -53,7 +54,7 @@ const Products = () => {
                         shopName: item.shopName,
                         action:
                         <>
-                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedItemToEdit(item)}>Edit</Button>
+                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button>
                             <Button danger onClick={() => handleDeleteProduct(item.$id)}>Delete</Button>
                             {/* <Switch style={{marginLeft:10}} checked={item.isActive} onChange={(v) => handleProductStateChange({...item, isActive: v})} /> */}
                         </>
@@ -113,6 +114,45 @@ const Products = () => {
             messageApi.error(message)
         }
     }
+    function openEditForm(item){
+        console.log(item,"ITEM");
+        setIsEditModalVisible(true)
+        setEditPrefill({
+            name:item.name,
+            $id: item.$id,
+            image:item.image,
+            isActive:item.isActive,
+            description:item.description,
+            estimated_delivery:item.estimated_delivery,
+            price:item.price,
+            associated_shop:item.associated_shop,
+            productType:item.productType
+        })
+        
+    }
+    async function handleEditProduct(editParams){
+        console.log(editPrefill,"EDIT");
+        
+        // console.log(typeof editParams.isActive, "Type of isactive");
+        
+        try {
+            const response = await postApiCall("admin/editProduct", editParams, user.token, true);
+            const {data, message, status} = response.data;
+            console.log(data);
+            console.log(message);
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+
+            }else{
+                messageApi.error(message)
+            }
+
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
 
     async function handleDeleteProduct(productId) {
         try {
@@ -153,16 +193,19 @@ const Products = () => {
     
      {/* Modal for editing and adding user */}
       <Modal
-        title={editingProduct ? 'Edit Product' : 'Add Product'}
+        title={isEditModalVisible ? 'Edit Product' : 'Add Product'}
         open={isEditModalVisible || isAddModalVisible}
         footer={false}
         onCancel={() => {
           setIsEditModalVisible(false);
           setIsAddModalVisible(false);
-          setEditingProduct(null);
         }}
-      >
-        <AddProduct categories = {categories} onSubmit = {(data)=>handleAddProduct(data)} />
+      > 
+        {isEditModalVisible
+        ?
+        <AddProduct categories = {categories} onUpdate={(data)=>handleEditProduct(data)} preFill={editPrefill}/>
+        :
+        <AddProduct categories = {categories} onSubmit = {(data)=>handleAddProduct(data)} preFill={false}/>}
       </Modal>
         </div>
 

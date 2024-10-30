@@ -87,22 +87,25 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
             setFormaData({
                 ...formData,
                 name: preFill.name,
-                imageURI: preFill.coverImage,
+                // imageURI: preFill.coverImage,
                 isActive: preFill.isActive,
                 description: preFill.description,
                 estimated_delivery: preFill.estimated_delivery,
                 price: preFill.price,
-                categoryId: preFill.categoryId,
-                shopName: preFill.shopName,
-                _id: preFill._id
+                category: preFill.category,
+                image:preFill.image,
+                // shopName: preFill.shopName,
+                $id: preFill.$id
             });
             formRef.current.setFieldsValue({
                 ...formData,
                 Name: preFill.name,
                 Description: preFill.description,
                 Delivery: preFill.estimated_delivery,
+                category: preFill.category,
                 Price: preFill.price,
-                active: preFill.isActive
+                active: preFill.isActive,
+                image:preFill.image
             });
         }else{
             setIsEdit(false);
