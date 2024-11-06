@@ -3,8 +3,11 @@ import {Button, Drawer, Image, Form, Layout, List, Modal, Switch, Table, message
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { formatOrderDateTime, getUserData, formatOrdersDataForTable, getApiCall, postApiCall, formatInventoryDateTime } from '../utils';
 import EditOrder from './Edit Order';
+import BillFormat from './BillFormat';
 
 const Orders = () => {
     const user = getUserData();
@@ -18,6 +21,7 @@ const Orders = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    const [orderBillData, setOrderBillData] = useState(null);
     const [messageApi, contextHolder] = message.useMessage();
     const [showModal, setShowModal]= useState(false);
 
@@ -31,8 +35,22 @@ const Orders = () => {
     const handleCancelOrderConfirm = () => {
         console.log("handleCancelOrderConfirm");    
     }
-    const handleGeneratePDF = () => {
-        console.log("handleCancelOrderConfirm");    
+
+    function handleGeneratePDF(id) {
+        const billElement = document.querySelector('#bill');
+        html2canvas(billElement, {
+            scale: 2, 
+        }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdfWidth = canvas.width * 0.264583;
+            const pdfHeight = canvas.height * 0.264583;
+    
+            const pdf = new jsPDF(pdfWidth > pdfHeight ? 'landscape' : 'portrait', 'mm', [pdfWidth, pdfHeight]);
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`Order - ${id || ''}.pdf`);
+        }).catch((error) => {
+            console.error("Error generating PDF:", error);
+        });
     }
     const handleCategoryStateChange = () => {
         console.log("handleCancelOrderConfirm");    
@@ -40,6 +58,7 @@ const Orders = () => {
 
     async function getUsersList() {
         setLoading(true);
+        // debugger
         try {
             if(user){
                 const response = await getApiCall("admin/getOrders", user.token);
@@ -49,6 +68,7 @@ const Orders = () => {
                         const address = JSON.parse(item?.address);
                         const products = JSON.parse(item?.products);
                         let parsedItem = {...item, products: products, address: address};
+                        
 
                         return {
                             key: item?.$id,
@@ -57,11 +77,11 @@ const Orders = () => {
                             dateTime: formatInventoryDateTime(item?.dateTime),
                             address: address?.address,
                             status: item?.orderStatus,
-                            contact: address?.phoneNumber,
+                            contact: address?.contactNumber,
                             customerName: address?.name,
                             action:
                             <div style={{display:'flex', flexDirection:'row'}}>
-                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {setSelectedUserToEdit(parsedItem); setShowModal(true)}}>Edit</Button>
+                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(parsedItem); setShowModal(true)}}>Edit</Button>
                                 <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button>
                             </div>
                             ,
@@ -90,9 +110,15 @@ const Orders = () => {
         form.resetFields();
         setIsAddModalVisible(true);
     }
+
+    function openEditOrder(data){
+        console.log(data,"openEdit");
+        setIsEditModalVisible(true)
+        
+    }
     
     return(
-        <div style={{minWidth:'30cm'}}>
+        <div style={{minWidth:'20cm'}}>
         <h1>Orders</h1>
         <Button
         type="primary"
@@ -107,13 +133,26 @@ const Orders = () => {
         dataSource={userList} 
         columns={columns} 
         />
+         {/* Bill to print */}
+         <div  style={{position: 'absolute', left: '-9999px',}} id='bill'>
+            <BillFormat
+                shopName="ABC Shop"
+                billNo="12345"
+                date="April 25, 2024"
+                customerName="John Doe"
+                email="john@example.com"
+                address="123 Main St, City"
+                products={selectedUserToEdit?.products}
+            />
+        </div>
+     
 
 <Modal
         title={editingProduct ? 'Edit Product' : 'Add Order'}
-        open={isEditModalVisible || isAddModalVisible}
+        open={isEditModalVisible}
         footer={false}
         onCancel={() => {
-        //   setIsEditModalVisible(false);
+          setIsEditModalVisible(false);
           setIsAddModalVisible(false);
         //   setEditingProduct(null);
         }}

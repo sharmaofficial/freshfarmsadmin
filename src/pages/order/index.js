@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import EditOrder from '../Edit Order';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import BillFormat from './BillFormat';
+import BillFormat from '../BillFormat';
 import './styles.css'
 const data = [
     {

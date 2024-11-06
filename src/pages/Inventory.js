@@ -6,7 +6,9 @@ import { useState } from 'react';
 import { formatOrderDateTime, getUserData,formatInventoryDateTime, formatLogsDataForTable, getApiCall, postApiCall } from '../utils';
 import AddStock from './AddStock';
 
-const InventoryLog = () => {
+
+const Inventory=()=>{
+
     const user = getUserData();
     console.log(user, "users")
     const [loading, setLoading] = useState(false);
@@ -20,49 +22,37 @@ const InventoryLog = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
 
-    const [form] = Form.useForm();
-
     useEffect(() => {
-        getUsersList();
+        getInventoryData();
     },[]);
-
-    const handleInventoryUpdate = () => {
-        console.log("Called");
-        
-    }
-    const showAddProductModal= () => {
-        form.resetFields();
-        setIsAddModalVisible(true);
-    }
-
-    async function getUsersList() {
+    
+    async function getInventoryData() {
         // debugger
         setLoading(true);
         try {
             if(user){
-                const response = await getApiCall("admin/getInventoryLog", user.token);
+                const response = await getApiCall("admin/getInventory", user.token);
                 console.log(response.data,"Inventory Data")
                 const {data, status, message} = response.data;
-                if(status){
-                    const transformedArray = data.documents.map((item, index) => {
-                        return {
-                            key: item?.id,
-                            // id: item?.id,
-                            orderId: item?.orderId,
-                            orderType: item?.orderType,
-                            dateTime: formatInventoryDateTime(item?.createdAt),
-                            action:
-                            <>
-                                {/* <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button> */}
-                                {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
-                                {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />*/}
-                            </>
-                        }
-                    });                
-                    const {columns} = formatLogsDataForTable(data.documents);
-                    setColumns(columns);
-                    setUsersList(transformedArray);
-                }
+                // if(status){
+                //     const transformedArray = data.documents.map((item, index) => {
+                //         return {
+                //             key: item?.id,
+                //             orderId: item?.orderId,
+                //             orderType: item?.orderType,
+                //             dateTime: formatInventoryDateTime(item?.createdAt),
+                //             action:
+                //             <>
+                //                 <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
+                //                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                //                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />*/}
+                //             </>
+                //         }
+                //     });                
+                //     const {columns} = formatLogsDataForTable(data.documents);
+                //     setColumns(columns);
+                //     setUsersList(transformedArray);
+                // }
             }
             setLoading(false);
         } catch (error) {
@@ -73,15 +63,15 @@ const InventoryLog = () => {
 
     return(
         <div style={{minWidth:'24cm'}}>
-        <h1>Inventory Logs</h1>
-        {/* <Button
+        <h1>Inventory</h1>
+        <Button
         type="primary"
         icon={<PlusOutlined />}
         style={{ marginBottom: 16 }}
-        onClick={showAddProductModal}
+        // onClick={showAddProductModal}
       >
-        Add Inventory Log
-      </Button> */}
+        Add Inventory
+      </Button>
 
       <Table 
         // title={() => 'Inventory logs'}
@@ -99,9 +89,10 @@ const InventoryLog = () => {
           setEditingProduct(null);
         }}
       >
-        <AddStock categories = {categories} onSubmit = {(data)=>handleInventoryUpdate(data)} />
+        {/* <AddStock categories = {categories} onSubmit = {(data)=>handleInventoryUpdate(data)} /> */}
       </Modal>
         </div>
-    )
+    ) 
 }
-export default InventoryLog;
+
+export default Inventory

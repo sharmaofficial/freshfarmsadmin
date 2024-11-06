@@ -12,6 +12,7 @@ import AddProduct from '../pages/Add Product';
 import Product from '../pages/product';
 import Products from '../pages/Products';
 import InventoryLog from '../pages/InventoryLog';
+import Inventory from '../pages/Inventory';
 import Order from '../pages/order';
 import Category from '../pages/category';
 import Package from '../pages/package';
@@ -46,7 +47,8 @@ const AppRoutes = () => {
             {/* <Route path="productsOld" element={<Product />} /> */}
             <Route path="categories" element={<Categories />} />
             {/* <Route path="categoriesold" element={<Category />} /> */}
-            <Route path="inventory" element={<InventoryLog />} />
+            <Route path="inventoryLog" element={<InventoryLog />} />
+            <Route path="inventory" element={<Inventory />} />
             {/* <Route path="inventoryold" element={<InventoryLog/>} /> */}
             <Route path="orders" element={<Orders/>} />
             {/* <Route path="ordersold" element={<Order/>} /> */}

@@ -1,15 +1,15 @@
-import { Button, Card, Select, Typography } from "antd"
-import { formatOrderDateTime, postApiCall } from "../../utils";
-import { FormControl, FormHelperText, Input, Textarea } from "@chakra-ui/react";
+import { Button, Card, Form, Select, Typography, Input, message } from "antd"
+import { formatOrderDateTime, getUserData, postApiCall } from "../../utils";
+import { FormHelperText } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useLocalStorage from "../../utils/localStorageHook";
 const { Paragraph, Text } = Typography;
 
-const EditOrder = ({data, successCallback, errorCallback}) => {
+const EditOrder = ({data, successCallback, errorCallback, prefill}) => {
 
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({});
-    const {userData} = useLocalStorage('user');
+    const {userData} = getUserData();
 
     useEffect(() => {
         console.log("data", data);
@@ -46,87 +46,103 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
     }
 
     return(
-        <Card>
-            <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Id</Text>
-            <Paragraph copyable>{formData.orderId}</Paragraph>
+        // <Card>
+        <Form name ="editOrder" layout="vertical">
+            <Form.Item style={{fontWeight: 'bold'}} label="Order Id">
+            {/* <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Id</Text> */}
+            <Text copyable>{formData.orderId}</Text>
+            </Form.Item>
+            <Form.Item label="Order Date">
             <div>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Date</Text>
-                <Paragraph>{formatOrderDateTime(formData.dateTime)}</Paragraph>
+                {/* <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Date</Text> */}
+                <Text>{formatOrderDateTime(formData.dateTime)}</Text>
             </div>
+            </Form.Item>
 
             {
                 formData?.products?.map(product => {
                     return(
-                        <>                        
+                        <Form.Item>                        
                             <div style={{flexDirection: 'column'}}>
                                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Name: {product?.name}</Text>
                             </div>
                             <div style={{flexDirection: 'column'}}>
                                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Quantity: {product?.packageType?.name}gm * {product?.quantity}</Text>
                             </div>
-                        </>
+                        </Form.Item>
                     )
                 })
   
             }
             {
-                <div>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Status</Text>
+                <Form.Item label='Order Status'>
+                    {/* <Text style={{fontWeight: 'bold', fontSize: 20}}>Order Status</Text> */}
                     <Select 
                         style={{width: '100%'}} 
-                        value={formData?.orderStatus || 'NA'} 
+                        value={formData?.orderStatus} 
+                        placeholder="Select Order Status"
                         onChange={(v)=> setFormData({...formData, orderStatus: v})}
                         options={[{ value: 'Processing', label: <span>Processing</span> }, { value: 'In Transit', label: <span>In Transit</span> }, { value: 'Delivered', label: <span>Delivered</span> }]} 
                         disabled={formData?.orderStatus === 'Cancelled'}
                     />
-                </div>
+                </Form.Item>
             }
             
-
-            <div>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Address details</Text>
-                <FormControl>
-                    <FormHelperText>Recipient's Name</FormHelperText>
+            <Text style={{fontWeight: 'bold', fontSize: 15}}>Address details</Text>
+            <Form.Item style={{marginLeft:'20', marginTop:'10px'}} >
+                <Form.Item >
+                {/* <Text style={{fontWeight: 'bold', fontSize: 20}}>Address details</Text> */}
+                    {/* <FormHelperText>Recipient's Name</FormHelperText> */}
                     <Input
                         value={formData.address?.name}
                         size='sm'
                         width='inherit'
                         placeholder='Name'
-                        variant='outline'
+                        // variant='outline'
                         onChange={(v) => {setFormData({...formData, address:{...formData.address, name: v.target.value}}); console.log(v.target.value);}}
                     />
-                    <FormHelperText>Recipient's House No</FormHelperText>
+            </Form.Item>
+            <Form.Item>
+                    {/* <FormHelperText>Recipient's House No</FormHelperText> */}
                     <Input
                         value={formData.address?.houseNo}
                         size='sm'
                         width='inherit'
                         placeholder='House No'
-                        variant='outline'
+                        // variant='outline'
                         onChange={(v) => {setFormData({...formData, address:{...formData.address, houseNo: v.target.value}}); console.log(v.target.value);}}
-                        type="number"
+                        // type="number"
                     />
-                    <FormHelperText>Landmark</FormHelperText>
+            </Form.Item>
+            <Form.Item>
+                    {/* <FormHelperText>Landmark</FormHelperText> */}
                     <Input
                         value={formData.address?.landmark}
                         size='sm'
                         width='inherit'
                         placeholder='landmark'
-                        variant='outline'
+                        // variant='outline'
                         onChange={(v) => {setFormData({...formData, address:{...formData.address, landmark: v.target.value}}); console.log(v.target.value);}}
                     />
-                    <FormHelperText>Recipient's Phone Number</FormHelperText>
+            </Form.Item>
+            <Form.Item>
+                    {/* <FormHelperText>Recipient's Phone Number</FormHelperText> */}
                     <Input
                         value={formData.address?.phoneNumber}
                         size='sm'
                         width='inherit'
                         placeholder='Phone Number'
-                        variant='outline'
+                        // variant='outline'
                         onChange={(v) => {setFormData({...formData, address:{...formData.address, phoneNumber: v.target.value}}); console.log(v.target.value);}}
                         type="number"
                     />
+            </Form.Item>
+            <Form.Item>
                     <Paragraph copyable>Phone : {formData.address?.phoneNumber}</Paragraph>
-                    <FormHelperText>Complete Address</FormHelperText>
-                    <Textarea
+            </Form.Item>
+            <Form.Item>
+                    {/* <FormHelperText>Complete Address</FormHelperText> */}
+                    <Input.TextArea
                         value={formData.address?.address}
                         size='sm'
                         width='inherit'
@@ -134,10 +150,11 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
                         variant='outline'
                         onChange={(v) => {setFormData({...formData, address:{...formData.address, address: v.target.value}}); console.log(v.target.value);}}
                     />
-                </FormControl>
-                
+            </Form.Item>
+            <Form.Item>
                 <Paragraph copyable>Complete Address : {formData.address?.address}</Paragraph>
-            </div>
+            </Form.Item>
+            </Form.Item>
 
             <div>
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Payment details</Text>
@@ -154,9 +171,10 @@ const EditOrder = ({data, successCallback, errorCallback}) => {
                 }
             </div>
             <div style={{marginTop: 10}}>
-                <Button onClick={updateOrder} isLoading={loading} disabled={loading}>Update</Button>
+                <Button onClick={updateOrder} disabled={loading}>Update</Button>
             </div>
-        </Card>
+            </Form>
+        // </Card>
     )
 };
 

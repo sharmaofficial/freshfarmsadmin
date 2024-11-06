@@ -3,8 +3,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-const BASE_URL = `http://localhost:8080/`
-// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+// const BASE_URL = `http://localhost:8080/`
+const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token, isFormData) => {
@@ -93,7 +93,7 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.orderId?.includes(value)
         },
-        width: '60%',
+        width: '70%',
         render: (_, record) => {
           return (
             <Paragraph copyable>{record.orderId}</Paragraph>
@@ -122,7 +122,7 @@ function formatOrdersDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record?.address.includes(value),
-        width: '20%',
+        width: '60%',
         render: (_, record) => {
           return (
             <>
@@ -145,14 +145,14 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.status?.includes(value);
         },
-        width: '20%',
+        width: '30%',
         render: (_, record) => {
           return(
             <div>
               {
                 record?.status === 'Processing'
                 ?
-                <Paragraph style={{color:'orange'}}>{record?.status}</Paragraph>
+                <Paragraph style={{color:'orange', minWidth:'100px'}}>{record?.status}</Paragraph>
                 :
                 record?.status === 'Delivered'
                 ?
@@ -221,7 +221,7 @@ function formatCategoryDataForTable(data) {
         title: 'Image',
         dataIndex: 'image',
         key: 'image',
-        width: '25%',
+        width: '20%',
       },
       // {
       //   title: 'Order Status',
@@ -258,6 +258,12 @@ function formatCategoryDataForTable(data) {
       //     )
       //   }
       // },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        width: '10%',
+      },
       {
         title: 'Action',
         dataIndex: 'action',
@@ -391,11 +397,11 @@ function formatLogsDataForTable(data) {
         title: 'Order type',
         dataIndex: 'orderType'
       },
-      {
-        title: 'Action',
-        dataIndex: 'action',
-        key: 'action',
-      },
+      // {
+      //   title: 'Action',
+      //   dataIndex: 'action',
+      //   key: 'action',
+      // },
   ];
 
   return {columns};

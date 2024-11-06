@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Button, Card } from 'antd';
-import { Link, Outlet } from 'react-router-dom'; // Import Link for navigation and Outlet for rendering child routes
+import { Link, Outlet, useLocation } from 'react-router-dom'; // Import Link for navigation and Outlet for rendering child routes
 // import image from '../assets/images/farmImage1.webp'
 import {
   MenuUnfoldOutlined,
@@ -16,6 +16,7 @@ const { Header, Sider, Content, Footer } = Layout;
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -55,8 +56,9 @@ const Dashboard = () => {
         {/* Content */}
         <Content style={{ margin: '16px', padding: '24px', background: '#fff', minHeight: 280 }}>
           <Outlet /> {/* This renders the selected page content */}
-          <Graph/>
-        </Content>
+          {location.pathname == '/dashboard' && <Graph/>}
+          {/* <Graph/> */}
+        </Content>  
 
         {/* Footer */}
         <Footer style={{ textAlign: 'center' }}>

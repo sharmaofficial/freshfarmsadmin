@@ -39,7 +39,11 @@ const Sidebar = ({collapsed, toggleCollapsed}) => {
           <Link to="/dashboard/categoriesold">Categories Old</Link> 
         </Menu.Item> */}
         <Menu.Item key="8" icon={<ShopOutlined />}>
-          <Link to="/dashboard/inventory">Inventory Log</Link>
+          <Link to="/dashboard/inventoryLog">Inventory Log</Link>
+        </Menu.Item>
+
+        <Menu.Item key="9" icon={<ShopOutlined />}>
+          <Link to="/dashboard/inventory">Inventory</Link>
         </Menu.Item>
         {/* <Menu.Item key="9" icon={<SettingOutlined />}>
           <Link to="/dashboard/inventoryold">Inventory Log old</Link>

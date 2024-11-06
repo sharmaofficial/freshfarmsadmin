@@ -15,6 +15,8 @@ const Packages = () => {
     const [categories, setCategories] = useState([]);
     const [columns, setColumns] = useState([]);
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [editPrefill, setEditPrefill] = useState({});
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const [messageApi, contextHolder] = message.useMessage();       
     const [showAddAlertSuccess, setShowAddAlertSuccess] = useState(false);
@@ -30,6 +32,7 @@ const Packages = () => {
         setLoading(true);
         try {
             if(user){
+                // debugger
                 // const response = await getApiCall("", decryptToken(user.token, 'freshfarms'));
                 const response = await getApiCall("admin/getPackages", user.token);
                 const {data, status, message} = response.data;
@@ -42,8 +45,8 @@ const Packages = () => {
                         weigth: Math.abs(Number(item.name)), //This logic needs to be changed. Numbers are coming as strings
                         action:
                         <>
-                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
-                            <Button danger style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
+                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button>
+                            <Button danger style={{ marginRight: 10}} onClick={() => handleDeletePackage(item.$id)}>Delete</Button>
                             {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item.$id)} /> */}
                         </>
                     }));                
@@ -94,11 +97,64 @@ const Packages = () => {
             setErrorAddFail(true)
         }
     }
+    function openEditForm(item){
+        setIsEditModalVisible(true)
+        setEditPrefill({
+            name:item.name,
+            id:item.$id
+        })
+    }
+
+
+    async function handleEditPackage(editParams) {
+        // editParams= {...editParams, $id:editPrefill.$id}
+        console.log(editParams,"EDIT");
+        // console.log(typeof editParams.isActive, "Type of isactive");
+        
+        try {
+            const response = await postApiCall("admin/editPackage", editParams, user.token, false);
+            const {data, message, status} = response.data;
+            console.log(data);
+            console.log(message);
+            if(status){
+                messageApi.success(message);
+                getUsersList();
+
+            }else{
+                messageApi.error(message)
+            }
+
+        } catch (error) {
+            console.log(error);
+            messageApi.error(message)
+        }
+    }
 
     const showAddPackagesModal= () => {
         form.resetFields();
         setIsAddModalVisible(true);
 
+    }
+
+
+    async function handleDeletePackage(packageId) {
+        // debugger
+        try {
+          const response = await postApiCall("admin/deletePackage", {id: packageId}, user.token, false);
+          const {data, message, status} = response.data;
+          console.log(data);
+          console.log(message);
+          if(status){
+              messageApi.success(message);
+              getUsersList();
+          }else{
+          console.log(message);
+              messageApi.error(message)
+          }
+      } catch (error) {
+          console.log(error);
+          messageApi.error(message)
+      }
     }
     
     return(
@@ -141,17 +197,23 @@ const Packages = () => {
         columns={columns} 
         />
     <Modal
-        title={"Add New Package"}
-        open={isAddModalVisible}
+        title={isEditModalVisible ? 'Edit Package' : 'Add New Package'}
+        open={isAddModalVisible || isEditModalVisible}
         footer={null}
         onCancel={() => {
-        //   setIsEditModalVisible(false);
+          setIsEditModalVisible(false);
           setIsAddModalVisible(false);
         //   setEditingProduct(null);
         }}
         // onOk={}
       >
-        <AddPackage onSubmit = {(data)=>handleAddPackage(data)} />
+        {
+         isEditModalVisible
+            ?
+            <AddPackage onEdit={(data)=>handleEditPackage(data)} preFill={editPrefill}/>
+            :
+            <AddPackage onSubmit = {(data)=>handleAddPackage(data)} />
+        }
       </Modal>
         </div>
     )
