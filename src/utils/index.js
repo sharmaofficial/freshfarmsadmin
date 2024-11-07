@@ -407,6 +407,45 @@ function formatLogsDataForTable(data) {
   return {columns};
 }
 
+
+function formatInventoryDataForTable(data) {
+
+  const columns = [
+      {
+        title: 'Id',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: 'Associated Product',
+        dataIndex: 'associatedProduct',
+        key: 'associatedProduct',
+      },
+      {
+        title: 'Package',
+        dataIndex: 'package',
+        key: 'package',
+      },
+      {
+        title: 'Date',
+        dataIndex: 'dateTime',
+        key: 'dateTime',
+        filters: data.map(item => ({
+          text: item.dateTime,
+          value: item.dateTime,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
+      },
+      {
+        title: 'Quantity',
+        dataIndex: 'quantity'
+      },
+  ];
+
+  return {columns};
+}
+
 const encryptToken = async (token, key) => {
   const encodedToken = new TextEncoder().encode(token);
   const encryptedData = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: new Uint8Array(12) }, key, encodedToken);
@@ -508,6 +547,7 @@ export {
     formatOrdersDataForTable,
     formatCategoryDataForTable,
     formatProductDataForTable,
+    formatInventoryDataForTable,
     formatPackageDataForTable,
     formatLogsDataForTable,
     formatInventoryDateTime,
