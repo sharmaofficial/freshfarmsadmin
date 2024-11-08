@@ -36,11 +36,17 @@ async function getDataForAddInventory() {
 };
 
 
-
   const handleSubmit = async values => {
     try {
+
+        const updatedAt = new Date().toISOString();
+        const dataToSubmit = { 
+            ...values, 
+            quantity: Number(values.quantity),
+            isActive: true,
+            updatedAt };
         debugger
-      const response = await postApiCall('admin/createInventoryForProduct', values, user.token);
+      const response = await postApiCall('admin/createInventoryForProduct', dataToSubmit, user.token);
       const {data, message, status} = response.data;
       message.success("Inventory added successfully!");
       if(status){

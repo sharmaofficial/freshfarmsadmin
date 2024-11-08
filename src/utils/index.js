@@ -441,6 +441,10 @@ function formatInventoryDataForTable(data) {
         title: 'Quantity',
         dataIndex: 'quantity'
       },
+      {
+        title: 'Actions',
+        dataIndex: 'action'
+      },
   ];
 
   return {columns};
