@@ -11,23 +11,28 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
     const [isTouched, setIsTouched] = useState(false);
     const [formData, setFormaData] = useState({
         name: "",
-        coverImage: null,
-        image:{
-            type: ""
-        }
+        // coverImage: null,
+        Image:{}
+        // image:{
+        //     type: ""
+        // }
     });
+    // debugger
 
     useEffect(() => {
         setIsTouched(false);
+        // console.log(preFill, "PREFILL");
+        // debugger
         if(preFill){
-            console.log(preFill);
+            console.log(preFill, "PREFILL");
             setIsEdit(true);
             setFormaData({
                 ...formData,
                 name: preFill.name,
-                imageURI: preFill.coverImage,
+                // imageURI: preFill.coverImage,
+                Image:preFill.Image,
                 isActive: preFill.isActive,
-                _id: preFill._id
+                id: preFill.$id
             });
             formRef.current.setFieldsValue({
                 ...formData,
@@ -45,10 +50,11 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
 
         setFormaData({
             ...formData,
-            coverImage: base64Data,
-            image: {
-                type: event.target.files[0].type
-            }
+            // coverImage: base64Data,
+            Image:event.target.files[0]
+            // image: {
+            //     type: event.target.files[0].type
+            // }
         });
         setIsTouched(true);
     }
@@ -77,7 +83,17 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
         <Card style={{margin: 10, border:0}}>
             {/* <Title level={4} style={{marginBottom: 20}}>{formName || 'Add Category'}</Title> */}
             <Form ref={formRef} name={formName || 'Add Category'}>
-                <Form.Item name="Name" label="Name">
+                {
+                    isEdit&&(
+                    <Form.Item name="Id" label="Category Id">
+                    <Input
+                        defaultValue={formData.id}
+                        disabled
+                    />
+                </Form.Item>
+                    )
+                }
+                <Form.Item name="Name" label="Category Name">
                     <Input
                         name='Category Name'
                         placeholder='Fruit, Vegitable, etc.'
@@ -99,6 +115,8 @@ const AddCategory = ({onAdd, onUpdate, formName, preFill}) => {
                     isEdit ?
                     <Form.Item name="active" label="Category Status">
                         <Switch
+                            checkedChildren="Active"
+                            unCheckedChildren="Inactive"
                             checked={formData.isActive}
                             onChange={v => handleChangeStatus(v)}
                         />

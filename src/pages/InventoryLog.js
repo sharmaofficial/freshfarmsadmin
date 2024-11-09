@@ -53,7 +53,7 @@ const InventoryLog = () => {
                             dateTime: formatInventoryDateTime(item?.createdAt),
                             action:
                             <>
-                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
+                                {/* <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button> */}
                                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />*/}
                             </>
@@ -74,14 +74,14 @@ const InventoryLog = () => {
     return(
         <div style={{minWidth:'24cm'}}>
         <h1>Inventory Logs</h1>
-        <Button
+        {/* <Button
         type="primary"
         icon={<PlusOutlined />}
         style={{ marginBottom: 16 }}
         onClick={showAddProductModal}
       >
         Add Inventory Log
-      </Button>
+      </Button> */}
 
       <Table 
         // title={() => 'Inventory logs'}

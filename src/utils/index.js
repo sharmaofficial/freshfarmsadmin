@@ -3,13 +3,13 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-// const BASE_URL = `http://localhost:8080/`
-const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+const BASE_URL = `http://localhost:8080/`
+// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
-const postApiCall = async(path, params, token) => {
+const postApiCall = async(path, params, token, isFormData) => {
   // debugger
-  return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token}});
+  return await axios.post(`${BASE_URL}${path}`,{...params}, {headers: {Authorization: token, "Content-Type": isFormData?"multipart/form-data": "application/json"}});
 }
 
 const putApiCall = async(path, params, token) => {
@@ -93,7 +93,7 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.orderId?.includes(value)
         },
-        width: '60%',
+        width: '70%',
         render: (_, record) => {
           return (
             <Paragraph copyable>{record.orderId}</Paragraph>
@@ -122,7 +122,7 @@ function formatOrdersDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record?.address.includes(value),
-        width: '20%',
+        width: '60%',
         render: (_, record) => {
           return (
             <>
@@ -145,14 +145,14 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.status?.includes(value);
         },
-        width: '20%',
+        width: '30%',
         render: (_, record) => {
           return(
             <div>
               {
                 record?.status === 'Processing'
                 ?
-                <Paragraph style={{color:'orange'}}>{record?.status}</Paragraph>
+                <Paragraph style={{color:'orange', minWidth:'100px'}}>{record?.status}</Paragraph>
                 :
                 record?.status === 'Delivered'
                 ?
@@ -221,7 +221,7 @@ function formatCategoryDataForTable(data) {
         title: 'Image',
         dataIndex: 'image',
         key: 'image',
-        width: '25%',
+        width: '20%',
       },
       // {
       //   title: 'Order Status',
@@ -258,6 +258,12 @@ function formatCategoryDataForTable(data) {
       //     )
       //   }
       // },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        width: '10%',
+      },
       {
         title: 'Action',
         dataIndex: 'action',
@@ -391,10 +397,59 @@ function formatLogsDataForTable(data) {
         title: 'Order type',
         dataIndex: 'orderType'
       },
+      // {
+      //   title: 'Action',
+      //   dataIndex: 'action',
+      //   key: 'action',
+      // },
+  ];
+
+  return {columns};
+}
+
+
+function formatInventoryDataForTable(data) {
+
+  const columns = [
       {
-        title: 'Action',
-        dataIndex: 'action',
-        key: 'action',
+        title: 'Id',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: 'Associated Product',
+        dataIndex: 'associatedProduct',
+        key: 'associatedProduct',
+        filters: data.map(item => ({
+          text: item.productId.name,
+          value: item.productId.name,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.associatedProduct.includes(value),
+      },
+      {
+        title: 'Package',
+        dataIndex: 'package',
+        key: 'package',
+      },
+      {
+        title: 'Date',
+        dataIndex: 'dateTime',
+        key: 'dateTime',
+        filters: data.map(item => ({
+          text: item.dateTime,
+          value: item.dateTime,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
+      },
+      {
+        title: 'Quantity',
+        dataIndex: 'quantity'
+      },
+      {
+        title: 'Actions',
+        dataIndex: 'action'
       },
   ];
 
@@ -502,6 +557,7 @@ export {
     formatOrdersDataForTable,
     formatCategoryDataForTable,
     formatProductDataForTable,
+    formatInventoryDataForTable,
     formatPackageDataForTable,
     formatLogsDataForTable,
     formatInventoryDateTime,

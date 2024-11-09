@@ -61,12 +61,16 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
 
     const [formData, setFormaData] = useState({
         name: "",
-        coverImage: null,
-        categoryId: "",
-        shopName: "",
-        image:{
-            type: ""
-        },
+        // coverImage: null,
+        // categoryId: "",
+        category:"",
+        associated_shop:"66c9a7ee003b7882be2c",
+        productType: "66c9a86d001f504c1886",
+        // shopName: "",
+        image:{},
+        // image:{
+        //     type: ""
+        // },
         description: "",
         estimated_delivery: "",
         price: 0
@@ -83,22 +87,25 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
             setFormaData({
                 ...formData,
                 name: preFill.name,
-                imageURI: preFill.coverImage,
+                // imageURI: preFill.coverImage,
                 isActive: preFill.isActive,
                 description: preFill.description,
                 estimated_delivery: preFill.estimated_delivery,
                 price: preFill.price,
-                categoryId: preFill.categoryId,
-                shopName: preFill.shopName,
-                _id: preFill._id
+                category: preFill.category,
+                image:preFill.image,
+                // shopName: preFill.shopName,
+                $id: preFill.$id
             });
             formRef.current.setFieldsValue({
                 ...formData,
                 Name: preFill.name,
                 Description: preFill.description,
                 Delivery: preFill.estimated_delivery,
+                category: preFill.category,
                 Price: preFill.price,
-                active: preFill.isActive
+                active: preFill.isActive,
+                image:preFill.image
             });
         }else{
             setIsEdit(false);
@@ -151,7 +158,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         setFormaData(
             {
                 ...formData,
-                categoryId: e.key
+                category: e.key
             }
         )
     }
@@ -167,7 +174,10 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         setFormaData(
             {
                 ...formData,
-                shopName: label
+                // shopName: label
+                associated_shop: "66c9a7ee003b7882be2c",
+                productType: "66c9a86d001f504c1886",
+                
             }
         )
     }
@@ -183,10 +193,12 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
 
         setFormaData({
             ...formData,
-            coverImage: base64Data,
-            image: {
-                type: event.target.files[0].type
-            }
+            // coverImage: base64Data,
+            image: event.target.files[0]
+            // {
+            //     type: event.target.files[0].type,
+            //     data:base64Data
+            // }
         });
         setIsTouched(true);
     }
@@ -282,7 +294,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                         required
                     />
                 </Form.Item>
-                {
+                {/* {
                     isEdit ?
                     !isTouched ?
                     <div style={{marginTop: 10, marginBottom: 10}}>                        
@@ -300,7 +312,7 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
                     </div>
                     :
                     null
-                }
+                } */}
                 <Form.Item style={{display:'flex', justifyContent:'end'}}>
                     <Button onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}} style={{background:'#1677ff', color:"#fff"}}>
                         Submit
