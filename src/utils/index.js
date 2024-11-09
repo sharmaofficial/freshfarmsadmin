@@ -3,8 +3,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-// const BASE_URL = `http://localhost:8080/`
-const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+const BASE_URL = `http://localhost:8080/`
+// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token, isFormData) => {
@@ -420,6 +420,12 @@ function formatInventoryDataForTable(data) {
         title: 'Associated Product',
         dataIndex: 'associatedProduct',
         key: 'associatedProduct',
+        filters: data.map(item => ({
+          text: item.productId.name,
+          value: item.productId.name,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.associatedProduct.includes(value),
       },
       {
         title: 'Package',

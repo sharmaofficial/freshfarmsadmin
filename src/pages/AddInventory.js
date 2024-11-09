@@ -11,7 +11,8 @@ const AddInventory = ({ onClose }, ref) => {
   const [products, setProducts] = useState([]);
   const [packageQuantities, setPackageQuantities] = useState([]);
   const user = getUserData();
-  
+  const [messageApi, contextHolder] = message.useMessage();
+
 useEffect(()=>{
     getDataForAddInventory()
 },[])
@@ -45,18 +46,18 @@ async function getDataForAddInventory() {
             quantity: Number(values.quantity),
             isActive: true,
             updatedAt };
-        debugger
       const response = await postApiCall('admin/createInventoryForProduct', dataToSubmit, user.token);
-      const {data, message, status} = response.data;
-      message.success("Inventory added successfully!");
+      const {data, message: msg, status} = response.data;
       if(status){
-        // messageApi.success(message);
-    }
-      form.resetFields();
-      onClose(); 
+        message.success(msg);
+        form.resetFields();
+        onClose();
+        getDataForAddInventory();
+      } else {
+        message.error(typeof msg === 'string' ? msg : msg.error);
+      }
     } catch (error) {
       console.error("Submission error:", error);
-      message.error("Failed to add inventory.");
     }
   };
 

@@ -1,8 +1,11 @@
-import React from 'react';
-import { Form, Input, Button, Switch, Alert } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Switch, Alert, message } from 'antd';
+import { getApiCall, getUserData, postApiCall } from '../utils';
 
 const Settings = () => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const user = getUserData();
 
   const handleSave = (values) => {
     console.log('Settings Saved:', values);
@@ -12,6 +15,50 @@ const Settings = () => {
   const setMaintenance = (flag) => {
     console.log(flag,"maintaenence");
   } 
+
+  useEffect(() => {
+    getAppSettings()
+  }, []);
+
+  const getAppSettings = async() => {
+    setLoading(true);
+        try {
+            if(user){
+                const response = await getApiCall("admin/getMaintenanceStatus", user.token);
+                const {data, status, message: msg} = response.data;
+                if(status){
+                  message.success(msg);
+                  form.setFieldValue("Switch to maintenance", data);
+                } else {
+                  message.error(typeof msg === 'string' ? msg : msg.error);
+                }
+            }
+            setLoading(false);
+        } catch (error) {
+            console.log("error", error);
+            setLoading(false);
+        }
+  }
+
+  const updateMaintanenceStatus = async(maintanenceStatus) => {
+    setLoading(true);
+    try {
+        if(user){
+            const response = await postApiCall("admin/updateMaintenenceStatus", {isActive: maintanenceStatus},  user.token);
+            const {status, message: msg} = response.data;
+            if(status){
+              message.success(msg);
+              form.setFieldValue("Switch to maintenance", maintanenceStatus);
+            } else {
+              message.error(typeof msg === 'string' ? msg : msg.error);
+            }
+        }
+        setLoading(false);
+    } catch (error) {
+        console.log("error", error);
+        setLoading(false);
+    }
+  }
   
   return (
     <div style={{minWidth:'24cm'}}>
@@ -34,11 +81,12 @@ const Settings = () => {
         </Form.Item>
         <Form.Item
           label="Switch to maintenance"
+          name={"Switch to maintenance"}
         >
           <Switch
             checkedChildren="On"
             unCheckedChildren="Off"
-            onChange={(e)=>setMaintenance(e)}
+            onChange={(e)=> updateMaintanenceStatus(e)}
           />
         </Form.Item>
 
