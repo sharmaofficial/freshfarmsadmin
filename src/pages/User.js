@@ -24,6 +24,7 @@ const sampleUsers = [
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [usersCopy, setUsersCopy] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -85,22 +86,14 @@ const Users = () => {
   ];
 
   const handleStatusToggle = async(status, userId) => {
+    console.log("users", users);
     setLoading(true);
     let payload =  {isActive : !status, userId};
     try {
       const response = await postApiCall("admin/updateUserStatus", payload, user.token);
       const {data, status, message} = response.data;
-      console.log("status", status);
       if(status){
-        const temp = [...users];
-        temp.map(user => {
-          if (user.$id === userId) {
-            return { ...user, status: !user.status };
-          }
-          return user;
-        });
-        console.log("temp", temp);
-        setUsers(temp);
+        getUsersList();
         messageAPI.success(message);
       }else {
         messageAPI.warning(message);
@@ -125,6 +118,7 @@ const Users = () => {
             if(status){
                 setColumns(getUserColumns());
                 setUsers(data);
+                setUsersCopy(data);
             }
             messageAPI.success(message)
         }
