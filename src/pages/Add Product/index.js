@@ -53,12 +53,10 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         id: "",
         name: ""
     });
-
     const [selectedShop, setSelectedShop] = useState({
         id: "",
         name: ""
     })
-
     const [formData, setFormaData] = useState({
         name: "",
         // coverImage: null,
