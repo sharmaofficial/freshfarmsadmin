@@ -57,6 +57,7 @@ const Products = () => {
                 console.log(data, "product Data");
                 setCategories(data.categories)
                 console.log(message);
+                // debugger
                 if(status){
                     const transformedArray = data.products.map((item, index) => ({
                         key: item.$id,
@@ -64,7 +65,7 @@ const Products = () => {
                         name: item.name,
                         description: item.description,
                         image: <Image src={item.image} width={20} height={20} />,
-                        shopName: item.associated_shop,
+                        shopName: item.associated_shop?.name,
                         action:
                         <>
                             <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button>
