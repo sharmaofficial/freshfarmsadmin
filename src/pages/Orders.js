@@ -24,6 +24,7 @@ const Orders = () => {
     const [orderBillData, setOrderBillData] = useState(null);
     const [messageApi, contextHolder] = message.useMessage();
     const [showModal, setShowModal]= useState(false);
+    const [editData,setEditData]=useState({});
 
     const [form] = Form.useForm();
 
@@ -63,6 +64,8 @@ const Orders = () => {
             if(user){
                 const response = await getApiCall("admin/getOrders", user.token);
                 const {data, status, message} = response.data;
+                // console.log("DATAAAA", data);
+                
                 if(status){
                     const transformedArray = data.map((item, index) => {
                         const address = JSON.parse(item?.address);
@@ -88,8 +91,8 @@ const Orders = () => {
                             options:
                             <div style={{display:'flex', flexDirection:'row'}}>
                                  <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(parsedItem); handleGeneratePDF(item?.orderId)}}>Generate Bill</Button>
-                                 <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button>
-                                <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />
+                                 {/* <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                                {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                             </div>
 
                         }
@@ -113,6 +116,7 @@ const Orders = () => {
 
     function openEditOrder(data){
         console.log(data,"openEdit");
+        setEditData(data)
         setIsEditModalVisible(true)
         
     }
@@ -120,14 +124,14 @@ const Orders = () => {
     return(
         <div style={{minWidth:'20cm'}}>
         <h1>Orders</h1>
-        <Button
+        {/* <Button
         type="primary"
         icon={<PlusOutlined />}
         style={{ marginBottom: 16 }}
         onClick={showAddOrderModal}
       >
         Add Order
-      </Button>
+      </Button> */}
         <Table 
         loading={loading} 
         dataSource={userList} 
@@ -157,7 +161,7 @@ const Orders = () => {
         //   setEditingProduct(null);
         }}
       >
-        <EditOrder data={categories}/>
+        <EditOrder data={editData}/>
       </Modal>
         </div>
     )

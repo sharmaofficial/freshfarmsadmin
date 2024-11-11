@@ -3,8 +3,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-const BASE_URL = `http://localhost:8080/`
-// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+// const BASE_URL = `http://localhost:8080/`
+const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token, isFormData) => {
@@ -93,10 +93,10 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.orderId?.includes(value)
         },
-        width: '70%',
+        width: '10%',
         render: (_, record) => {
           return (
-            <Paragraph copyable>{record.orderId}</Paragraph>
+            <Paragraph copyable ellipsis={{ rows: 1, expandable: true }}>{record.orderId}</Paragraph>
           )
         }
       },
@@ -111,6 +111,11 @@ function formatOrdersDataForTable(data) {
         filterSearch: true,
         onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
         width: '30%',
+        render: (_, record) => {
+          return (
+            <Paragraph ellipsis={{ rows: 1, expandable: true }}>{record.dateTime}</Paragraph>
+          )
+        }
       },
       {
         title: 'Delivery Address',
@@ -126,8 +131,8 @@ function formatOrdersDataForTable(data) {
         render: (_, record) => {
           return (
             <>
-              <Paragraph>Name: {record?.customerName}</Paragraph>
-              <Paragraph copyable>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
+              <Paragraph ellipsis={{ rows: 1, expandable: true }}>Name: {record?.customerName}</Paragraph>
+              <Paragraph copyable ellipsis={{ rows: 1, expandable: true }}>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
               <Paragraph ellipsis= {{rows:2, expandable:true}}copyable>{record?.address}</Paragraph>
             </>
           )
@@ -152,17 +157,17 @@ function formatOrdersDataForTable(data) {
               {
                 record?.status === 'Processing'
                 ?
-                <Paragraph style={{color:'orange', minWidth:'100px'}}>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }} style={{color:'orange', minWidth:'100px'}}>{record?.status}</Paragraph>
                 :
                 record?.status === 'Delivered'
                 ?
-                <Paragraph style={{color:'green'}}>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }} style={{color:'green'}}>{record?.status}</Paragraph>
                 :
                 record?.status === 'Cancelled'
                 ?
-                <Paragraph style={{color:'red'}}>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }} style={{color:'red'}}>{record?.status}</Paragraph>
                 :
-                <Paragraph>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }}>{record?.status}</Paragraph>
               }
             </div>
           )

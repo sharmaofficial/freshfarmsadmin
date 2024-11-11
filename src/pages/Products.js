@@ -135,6 +135,7 @@ const Products = () => {
             image:item.image,
             isActive: item.isActive,
             description:item.description,
+            category:item.category,
             estimated_delivery:item.estimated_delivery,
             price:item.price,
             associated_shop:item.associated_shop,
