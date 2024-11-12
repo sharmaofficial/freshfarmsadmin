@@ -3,8 +3,9 @@ import { Button, Drawer, Image, Form, Layout, List, Modal, Switch, Table, messag
 import { PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { formatOrderDateTime, getUserData,formatInventoryDateTime, getApiCall, formatInventoryDataForTable } from '../utils';
+import { formatOrderDateTime, getUserData,formatInventoryDateTime, getApiCall, formatInventoryDataForTable, postApiCall } from '../utils';
 import AddInventory from './AddInventory';
+import UpdateStock from './UpdateStock';
 
 
 const Inventory=()=>{
@@ -14,14 +15,46 @@ const Inventory=()=>{
     const [loading, setLoading] = useState(false);
     const [inventoryData, setInventoryData] = useState([]);
     const [columns, setColumns] = useState([]);
-    const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    // const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    const [isEditModalVisible, setIsEditModalVisible]= useState(false);
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [editData, setEditData] = useState(null)
     const showModal = () => setIsAddModalVisible(true);
-    const handleCancel = () => setIsAddModalVisible(false);
+    
+    const showEditModal=(data)=>{
+        setIsEditModalVisible(true)
+        setEditData(data);
+    }
+    const handleCancel = () => {
+        setIsAddModalVisible(false);
+         setIsEditModalVisible(false)
+    }
 
     useEffect(() => {
         getInventoryData();
     },[]);
+
+    async function handleInventoryActiveStatus(activeStatus, id){
+        // debugger
+        console.log(activeStatus);
+        const payload={
+            isActive:activeStatus,
+            inventoryId:id
+        }
+        try {
+            const response = await postApiCall('admin/updateInventoryStatus', payload, user.token);
+            const {data, message: msg, status} = response.data;
+            if(status){
+              message.success("Status update successful!!");
+              getInventoryData();
+            } else {
+             message.error("Status change failed!!")
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+        }
+        
+    }
     
     async function getInventoryData() {
         // debugger
@@ -46,9 +79,9 @@ const Inventory=()=>{
                             dateTime: formatInventoryDateTime(item?.$createdAt),
                             action:
                             <>
-                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
+                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => showEditModal(item)}>Update Stock</Button>
                                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
-                                {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />*/}
+                                <Switch checked={item.isActive} onChange={(v) => handleInventoryActiveStatus(v, item.$id)} />
                             </>
                         }
                     });                
@@ -82,10 +115,18 @@ const Inventory=()=>{
         dataSource={inventoryData} 
         columns={columns}
         />
-
-      <Modal title="Add Inventory" open={isAddModalVisible} onCancel={handleCancel} footer={null}>
-        <AddInventory onClose={handleCancel} />
-      </Modal>
+        <Modal
+                title={isEditModalVisible ? "Update Stock" : "Add Inventory"}
+                open={isAddModalVisible || isEditModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                {isEditModalVisible ? (
+                    <UpdateStock editData={editData} onClose={handleCancel} />
+                ) : (
+                    <AddInventory onClose={handleCancel} />
+                )}
+            </Modal>
 
         </div>
     ) 
