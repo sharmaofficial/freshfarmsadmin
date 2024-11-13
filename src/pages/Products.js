@@ -54,18 +54,22 @@ const Products = () => {
                 // const response = await getApiCall("", decryptToken(user.token, 'freshfarms'));
                 const response = await getApiCall("admin/getProducts", user.token);
                 const {data, status, message} = response.data;
-                console.log(data, "product Data");
+                // console.log(data.products[0].category, "product Data");
                 setCategories(data.categories)
-                console.log(message);
+                // console.log(message);
+
                 // debugger
                 if(status){
                     const transformedArray = data.products.map((item, index) => ({
+                        
                         key: item.$id,
                         id: item.$id,
                         name: item.name,
                         description: item.description,
                         image: <Image src={item.image} width={20} height={20} />,
                         shopName: item.associated_shop?.name,
+                        category:item.category?.name ,
+                        price:"₹"+ item.price ,
                         action:
                         <>
                             <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button>
@@ -82,6 +86,7 @@ const Products = () => {
         } catch (error) {
             console.log("error ffhhfh", error);
             setLoading(false);
+            message.error("Failed to load data")
         }
     };
 

@@ -68,19 +68,17 @@ const Categories = () => {
     async function handleDeleteCategory(categoryId) {
         try {
             const response = await postApiCall("admin/deleteCategory", {id: categoryId}, user.token, false);
-            const {data, message, status} = response.data;
-            console.log(data);
-            console.log(message);
+            const {data, message : msg, status} = response.data;
             if(status){
-                messageApi.success(message);
+                message.success(msg || "Category deleted");
                 getUsersList();
             }else{
             console.log(message);
-                messageApi.error(message)
+                message.error(msg || "Error deleting category")
             }
         } catch (error) {
             console.log(error);
-            messageApi.error(message)
+            message.error("Error Deleting category")
         }
     }
 
@@ -96,11 +94,12 @@ const Categories = () => {
         formData={...formData, isActive:true} //check
         try {
             const response = await postApiCall("admin/addCategory", formData, user.token, true);
-            const {data, message, status} = response.data;
+            const {data, message : msg, status} = response.data;
             console.log(data);
             console.log(message);
             if(status){
-                messageApi.success(message);
+                setIsAddModalVisible(false)
+                message.success(msg || "Category added succesfully!");
                 getUsersList();
 
                 //TODO: Api return the updated data row, use this instead of calling the api again
@@ -121,11 +120,11 @@ const Categories = () => {
             }else{
             console.log(message);
 
-                messageApi.error(message)
+                message.error(msg || "Error Adding Category!!")
             }
         } catch (error) {
             console.log(error);
-            messageApi.error(message)
+            message.error("Error Adding Category!!")
         }
     }
 
@@ -146,20 +145,21 @@ const Categories = () => {
         
         try {
             const response = await postApiCall("admin/editCategory", editParams, user.token, true);
-            const {data, message, status} = response.data;
+            const {data, message:msg, status} = response.data;
             console.log(data);
             console.log(message);
             if(status){
-                messageApi.success(message);
+                message.success(msg||"Updated Successfully");
+                setIsEditModalVisible(false)
                 getUsersList();
 
             }else{
-                messageApi.error(message)
+                message.error(msg || "Error Updating ")
             }
 
         } catch (error) {
             console.log(error);
-            messageApi.error(message)
+            messageApi.error("Error Updating")
         }
     }
 

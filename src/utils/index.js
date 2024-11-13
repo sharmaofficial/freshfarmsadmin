@@ -281,8 +281,6 @@ function formatCategoryDataForTable(data) {
 }
 
 function formatProductDataForTable(data) {
-  console.log(data);
-
   const columns = [
       {
         title: 'Image',
@@ -310,6 +308,7 @@ function formatProductDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record.description.includes(value),
+        width:"40%"
       },
       {
         title: 'Shop Name',
@@ -321,6 +320,18 @@ function formatProductDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record.shopName.includes(value),
+        width:'15%'
+      },
+      {
+        title: 'Category',
+        dataIndex: 'category',
+        key: 'category',
+      },
+      {
+        title: 'Price(/gm)',
+        dataIndex: 'price',
+        key: 'price',
+        width:'10%'
       },
       {
         title: 'Action',
