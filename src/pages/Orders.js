@@ -1,5 +1,5 @@
 
-import {Button, Drawer, Image, Form, Layout, List, Modal, Switch, Table, message } from 'antd';
+import {Button, Drawer, Image, Form, Layout, List, Modal, Switch,Typography, Table, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -27,7 +27,7 @@ const Orders = () => {
     const [editData,setEditData]=useState({});
 
     const [form] = Form.useForm();
-
+    const{Text}=Typography;
 
     useEffect(() => {
         getUsersList();
@@ -64,39 +64,44 @@ const Orders = () => {
             if(user){
                 const response = await getApiCall("admin/getOrders", user.token);
                 const {data, status, message} = response.data;
-                // console.log("DATAAAA", data);
+                console.log("DATAAAA", data);
                 
                 if(status){
                     const transformedArray = data.map((item, index) => {
-                        const address = JSON.parse(item?.address);
-                        const products = JSON.parse(item?.products);
-                        let parsedItem = {...item, products: products, address: address};
-                        
+                        // const address = JSON.parse(item?.address);
+                        // const products = JSON.parse(item?.products);
 
+                        // let parsedItem = {...item, products: products, address: address};
+                        
+                        // debugger
                         return {
-                            key: item?.$id,
-                            id: item?.$id,
-                            orderId: item?.orderId,
-                            dateTime: formatInventoryDateTime(item?.dateTime),
-                            address: address?.address,
-                            status: item?.orderStatus,
-                            contact: address?.contactNumber,
-                            customerName: address?.name,
+                            key: item.$id,
+                            id: item.$id,
+                            orderId: item.orderId.orderId,
+                            dateTime: formatInventoryDateTime(item?.orderId.$createdAt),
+                            address: item.orderId.deliveryAddress.address,
+                            status: item.orderId.orderStatus,
+                            contact: item.orderId.deliveryAddress.contactNumber,
+                            customerName: item.orderId.deliveryAddress.name,
+                            totalAmount:"₹"+item.orderId.totalAmout,
+                            isPaid:item.orderId.isPaid?<Text type='success'>Paid</Text>:<Text type='danger'>Unpaid</Text>,
+                            // orderStatus:item.orderId.orderStatus
                             action:
                             <div style={{display:'flex', flexDirection:'row'}}>
-                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(parsedItem); setShowModal(true)}}>Edit</Button>
+                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(item.orderId); setShowModal(true)}}>Edit</Button>
                                 <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button>
                             </div>
                             ,
                             options:
                             <div style={{display:'flex', flexDirection:'row'}}>
-                                 <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(parsedItem); handleGeneratePDF(item?.orderId)}}>Generate Bill</Button>
+                                 <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item.orderId.products); handleGeneratePDF(item.orderId.orderId)}}>Generate Bill</Button>
                                  {/* <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                             </div>
 
                         }
                     });                
+                    // debugger
                     const {columns} = formatOrdersDataForTable(data);
                     setColumns(columns);
                     setUsersList(transformedArray);
@@ -161,7 +166,8 @@ const Orders = () => {
         //   setEditingProduct(null);
         }}
       >
-        <EditOrder data={editData}/>
+        <EditOrder data={editData} successCallback={()=>{console.log("Success")}} errorCallback={()=>{console.log("Error");
+        }}/>
       </Modal>
         </div>
     )

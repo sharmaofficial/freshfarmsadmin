@@ -7,24 +7,26 @@ const { Text, Paragraph } = Typography;
 const EditOrder = ({ data, successCallback, errorCallback }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm(); 
-    const { userData } = getUserData();
+    const userData  = getUserData();
+    // debugger
 
-    useEffect(() => {
-        const initialData = {
-            ...data,
-            products: typeof data.products === "string" ? JSON.parse(data.products) : data.products,
-            addressName: data.address?.name,
-            addressHouseNo: data.address?.houseNo,
-            addressLandmark: data.address?.landmark,
-            addressPhoneNumber: data.address?.contactNumber,
-            addressComplete: data.address?.address,
-        };
+    // useEffect(() => {
+    //     const initialData = {
+    //         ...data,
+    //         products: typeof data.products === "string" ? JSON.parse(data.products) : data.products,
+    //         addressName: data.address?.name,
+    //         addressHouseNo: data.address?.houseNo,
+    //         addressLandmark: data.address?.landmark,
+    //         addressPhoneNumber: data.address?.contactNumber,
+    //         addressComplete: data.address?.address,
+    //     };
 
-        form.setFieldsValue(initialData); 
-    }, [data, form]); 
+    //     form.setFieldsValue(initialData); 
+    // }, [data, form]); 
 
     const updateOrder = async (values) => {
         setLoading(true);
+        // debugger
         try {
             const response = await postApiCall(
                 "admin/updateOrderStatus",
@@ -61,13 +63,13 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
                 <Text strong>Order Date: </Text>
                 <Text  style={{ marginLeft: 8 }}>{formatInventoryDateTime(data.dateTime)}</Text>
             </Row>
-            {data?.products?.map((product, index) => (
+            {/* {data.products.map((product, index) => (
                 <div key={index} style={{marginTop:'16px'}}>
                     <Text><strong>Product Name:</strong> {product?.name}</Text>
                     <br />
                     <Text><strong>Quantity:</strong>{product?.packageType?.name}gm * {product?.quantity}</Text>
                 </div>
-            ))}
+            ))} */}
              </Form.Item>
 
             <Form.Item
@@ -79,15 +81,15 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
                 <Select
                     style={{ width: "100%" }}
                     options={[
-                        { value: "Processing", label: "Processing" },
-                        { value: "In Transit", label: "In Transit" },
-                        { value: "Delivered", label: "Delivered" },
+                        { value: "processing", label: "Processing" },
+                        { value: "inTransit", label: "In Transit" },
+                        { value: "delivered", label: "Delivered" },
                     ]}
                     disabled={data?.orderStatus === "Cancelled"}
                 />
             </Form.Item>
 
-            <Form.Item label="Address Details">
+            {/* <Form.Item label="Address Details">
                 <Form.Item
                     name="addressName"
                     rules={[{ required: true, message: "Name is required" }]}
@@ -139,7 +141,7 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
                 ) : (
                     <Paragraph>None</Paragraph>
                 )}
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={loading}>

@@ -3,8 +3,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-const BASE_URL = `http://localhost:8080/`
-// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+// const BASE_URL = `http://localhost:8080/`
+const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token, isFormData) => {
@@ -79,7 +79,7 @@ function formatUsersDataForTable(data) {
 }
 
 function formatOrdersDataForTable(data) {
-
+// debugger
   const columns = [
       {
         title: 'Order Id',
@@ -182,6 +182,16 @@ function formatOrdersDataForTable(data) {
         title: 'Options',
         dataIndex: 'options',
         key: 'options',
+      },
+      {
+        title: 'Total Amount',
+        dataIndex: 'totalAmount',
+        key: 'totalAmount',
+      },
+      {
+        title: 'Payment Status',
+        dataIndex: 'isPaid',
+        key: 'isPaid',
       },
   ];
 

@@ -12,9 +12,9 @@ const Settings = () => {
     // Simulate saving settings (e.g., via API)
   };
 
-  const setMaintenance = (flag) => {
-    console.log(flag,"maintaenence");
-  } 
+  // const setMaintenance = (flag) => {
+  //   console.log(flag,"maintaenence");
+  // } 
 
   useEffect(() => {
     getAppSettings()
