@@ -110,11 +110,11 @@ const Packages = () => {
             console.log(data);
             console.log(message);
             if(status){
-                message.success(msg||"Status Updated Successfully!");
+                message.success(msg.message||"Status Updated Successfully!");
                 getUsersList();
 
             }else{
-                message.error(msg||"Status update failed!!")
+                message.error(msg.message||"Status update failed!!")
             }
 
         } catch (error) {

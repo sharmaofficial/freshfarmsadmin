@@ -3,8 +3,8 @@ import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
-// const BASE_URL = `http://localhost:8080/`
-const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+const BASE_URL = `http://localhost:8080/`
+// const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
 
 const postApiCall = async(path, params, token, isFormData) => {
@@ -513,6 +513,11 @@ function formatOrderDateTime(dateTime) {
 
 function formatInventoryDateTime(dateTime){
   if (dateTime) {
+    const desiredFormatRegex = /^[A-Za-z]+\s\d{1,2},\s\d{4}\sat\s\d{1,2}:\d{2}\s(?:AM|PM)$/;
+
+    if (desiredFormatRegex.test(dateTime)) {
+      return dateTime; // Return as is if already in the desired format
+    }
     const inputDate = new Date(dateTime);
     
     if (isNaN(inputDate.getTime())) {
@@ -566,7 +571,6 @@ const storeUserData = (data) => {
 };
 
 const getUserData = () => {
-  console.log("Called user data get")
   const encryptedData = localStorage.getItem('user');
   if (!encryptedData) return null;
   const bytes = CryptoJS.AES.decrypt(encryptedData, 'freshfarms');

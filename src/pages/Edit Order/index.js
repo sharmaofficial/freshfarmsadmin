@@ -6,23 +6,25 @@ const { Text, Paragraph } = Typography;
 
 const EditOrder = ({ data, successCallback, errorCallback }) => {
     const [loading, setLoading] = useState(false);
+    const [selectedOrderStatus, setSelectedOrderStatus] = useState('');
     const [form] = Form.useForm(); 
-    const userData  = getUserData();
+    const userData = getUserData();
     // debugger
-
-    // useEffect(() => {
-    //     const initialData = {
-    //         ...data,
-    //         products: typeof data.products === "string" ? JSON.parse(data.products) : data.products,
-    //         addressName: data.address?.name,
-    //         addressHouseNo: data.address?.houseNo,
-    //         addressLandmark: data.address?.landmark,
-    //         addressPhoneNumber: data.address?.contactNumber,
-    //         addressComplete: data.address?.address,
-    //     };
-
-    //     form.setFieldsValue(initialData); 
-    // }, [data, form]); 
+    useEffect(() => {
+        const initialData = {
+            // ...data,
+            // products: typeof data.products === "string" ? JSON.parse(data.products) : data.products,
+            // addressName: data.address?.name,
+            // addressHouseNo: data.address?.houseNo,
+            // addressLandmark: data.address?.landmark,
+            // addressPhoneNumber: data.address?.contactNumber,
+            // addressComplete: data.address?.address,
+            orderStatus: data.status,
+            orderId: typeof data.orderId === 'object' ? data.orderId.$id : data.orderId
+        };
+        form.setFieldsValue(initialData); 
+        setSelectedOrderStatus(data.orderStatus)
+    }, [data, form]); 
 
     const updateOrder = async (values) => {
         setLoading(true);
@@ -37,7 +39,7 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
             setLoading(false);
             if (status) {
                 form.resetFields();
-                successCallback(message, data);
+                successCallback(message, values.orderId, values.orderStatus);
             } else {
                 errorCallback(message);
             }
@@ -54,10 +56,10 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
             layout="vertical"
             onFinish={updateOrder}
         >
-        <Form.Item style={{marginTop:'27px'}}>
+        <Form.Item name='orderId' style={{marginTop:'27px'}}>
             <Row>
                 <Text strong>Order Id: </Text>
-                <Text copyable style={{ marginLeft: 8 }}>{data.orderId}</Text>
+                <Text copyable style={{ marginLeft: 8 }}>{data?.$id || data.orderId}</Text>
             </Row>
             <Row style={{ marginTop: 8 }}>
                 <Text strong>Order Date: </Text>
@@ -80,12 +82,16 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
             >
                 <Select
                     style={{ width: "100%" }}
+                    //Processing, Packed, InTransit, Delivered, Cancelled
                     options={[
-                        { value: "processing", label: "Processing" },
-                        { value: "inTransit", label: "In Transit" },
-                        { value: "delivered", label: "Delivered" },
+                        { value: "Processing", label: "Processing" },
+                        { value: "Packed", label: "Packed" },
+                        { value: "InTransit", label: "InTransit" },
+                        { value: "Delivered", label: "Delivered" },
+                        { value: "Cancelled", label: "Cancelled" },
                     ]}
                     disabled={data?.orderStatus === "Cancelled"}
+                    value={selectedOrderStatus}
                 />
             </Form.Item>
 

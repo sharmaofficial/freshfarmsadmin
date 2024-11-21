@@ -226,7 +226,6 @@ const Products = () => {
             }else{
                 messageApi.error(message)
             }
-
         } catch (error) {
             console.log(error);
             messageApi.error(message)

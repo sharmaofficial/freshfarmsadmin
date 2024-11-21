@@ -11,7 +11,6 @@ import BillFormat from './BillFormat';
 
 const Orders = () => {
     const user = getUserData();
-    console.log(user, "users")
     const [loading, setLoading] = useState(false);
     const [userList, setUsersList] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -64,8 +63,6 @@ const Orders = () => {
             if(user){
                 const response = await getApiCall("admin/getOrders", user.token);
                 const {data, status, message} = response.data;
-                console.log("DATAAAA", data);
-                
                 if(status){
                     const transformedArray = data.map((item, index) => {
                         // const address = JSON.parse(item?.address);
@@ -77,7 +74,7 @@ const Orders = () => {
                         return {
                             key: item.$id,
                             id: item.$id,
-                            orderId: item.orderId.orderId,
+                            orderId: item.orderId.$id,
                             dateTime: formatInventoryDateTime(item?.orderId.$createdAt),
                             address: item.orderId.deliveryAddress.address,
                             status: item.orderId.orderStatus,
@@ -88,8 +85,8 @@ const Orders = () => {
                             // orderStatus:item.orderId.orderStatus
                             action:
                             <div style={{display:'flex', flexDirection:'row'}}>
-                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(item.orderId); setShowModal(true)}}>Edit</Button>
-                                <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button>
+                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder({...item, status: item.orderId.orderStatus}); setShowModal(true)}}>Edit</Button>
+                                {/* <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button> */}
                             </div>
                             ,
                             options:
@@ -120,10 +117,60 @@ const Orders = () => {
     }
 
     function openEditOrder(data){
-        console.log(data,"openEdit");
         setEditData(data)
         setIsEditModalVisible(true)
-        
+    }
+
+    function editSuccessCallback(msg, id, status) {
+        try {            
+            setIsEditModalVisible(false);
+            messageApi.success(msg);
+            const temp = userList.map(item => {
+                if(item.orderId === id){
+                    console.log("element", item);
+                    let payload = {
+                        key: item.$id,
+                        id: item.$id,
+                        orderId: item.orderId,
+                        dateTime: formatInventoryDateTime(item.dateTime),
+                        address: item.address,
+                        status: status,
+                        contact: item.contact,
+                        customerName: item.customerName,
+                        totalAmount: item.totalAmount,
+                        isPaid: item.isPaid,
+                        // orderStatus:item.orderId.orderStatus
+                        action:
+                        <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
+                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(payload); setShowModal(true)}}>Edit</Button>
+                            {/* <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button> */}
+                        </div>
+                        ,
+                        options:
+                        <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
+                             <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item.orderId.products); handleGeneratePDF(item.orderId.orderId)}}>Generate Bill</Button>
+                             {/* <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                            {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
+                        </div>
+    
+                    };
+                    console.log("payload", payload);
+                    return payload
+                } else {
+                    return item
+                }
+            });
+            setUsersList(temp);
+            setIsEditModalVisible(false);
+            messageApi.success(msg);
+        } catch (error) {
+          console.log("error", error);  
+        }
+    }
+
+    function editErrorCallback(msg) {
+        setIsEditModalVisible(false);
+        messageApi.error(msg);
     }
     
     return(
@@ -166,8 +213,11 @@ const Orders = () => {
         //   setEditingProduct(null);
         }}
       >
-        <EditOrder data={editData} successCallback={()=>{console.log("Success")}} errorCallback={()=>{console.log("Error");
-        }}/>
+        <EditOrder
+            data={editData} 
+            successCallback={(message, id, status) => editSuccessCallback(message, id, status)} 
+            errorCallback={(Error)=> editErrorCallback(Error)}
+        />
       </Modal>
         </div>
     )
