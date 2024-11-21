@@ -4,7 +4,7 @@ import { getUserData, postApiCall } from '../utils';
 
 const { Option } = Select;
 
-const UpdateStock = ({ editData, onClose }) => {
+const UpdateStock = ({ editData, onClose, onUpdate }) => {
     const [form] = Form.useForm();
     const user = getUserData();
 
@@ -17,13 +17,13 @@ const UpdateStock = ({ editData, onClose }) => {
                 quantity: parseInt(values.quantity, 10),
                 type: values.type,
             };
-            // Make the POST request
             console.log(typeof values.quantity);
             
             const response = await postApiCall('admin/updateStock', payload, user.token);
-            const {message:msg,status} = response.data;
+            const {data,message:msg,status} = response.data;
             if (status) {
                 message.success("Inventory updated successfully");
+                onUpdate(data, payload)
                 onClose();
             } else {
                 message.error(msg);

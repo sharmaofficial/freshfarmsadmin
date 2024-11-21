@@ -70,7 +70,9 @@ const Packages = () => {
             
             if(status){
                 message.success(msg || "Package added successfully!!");
-                getUsersList();
+                // getUsersList();
+                // debugger
+                addPackageToTable(data, formData);
                 setIsAddModalVisible(false)
                 setShowAddAlertSuccess(true)
                 
@@ -85,6 +87,23 @@ const Packages = () => {
             console.log(error);
             messageApi.error(message)
             setErrorAddFail(true)
+        }
+    }
+
+    const addPackageToTable = (packageId, data) => {
+        if(packageId && data){
+            let temp = [...userList];
+            temp.push({
+                key: packageId,
+                id: packageId,
+                weigth: Math.abs(Number(data.name)),
+                action:
+                <>
+                    <Button danger style={{ marginRight: 10}} onClick={() => handleDeletePackage(packageId)}>Delete</Button>
+                    <Switch checkedChildren="Active" unCheckedChildren="InActive" checked={false} onChange={(v) => handleEditPackage(v, packageId)} />
+                </>
+            });
+            setUsersList(temp);
         }
     }
     function openEditForm(item){
@@ -111,7 +130,7 @@ const Packages = () => {
             console.log(message);
             if(status){
                 message.success(msg.message||"Status Updated Successfully!");
-                getUsersList();
+                // getUsersList();
 
             }else{
                 message.error(msg.message||"Status update failed!!")
@@ -152,7 +171,7 @@ const Packages = () => {
     
     return(
         <div style={{minWidth:'24cm'}}>
-        {
+        {/* {
             showAddAlertSuccess&& (
                 <Alert
                 message="Package Successfully added!"
@@ -173,7 +192,7 @@ const Packages = () => {
                 onClose={()=>setErrorAddFail(false)}
                 />
             )
-        }
+        } */}
        <h1>Packages</h1>
         <Button
         type="primary"
