@@ -70,8 +70,6 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate, shops, p
         price: 0
     });
 
-    console.log("preFill", preFill);
-
     useEffect(() => {
         setIsTouched(false);
         if(preFill){
