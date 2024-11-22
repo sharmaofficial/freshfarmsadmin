@@ -77,6 +77,7 @@ const Inventory=()=>{
                             package:packageId.name,
                             quantity: item?.quantity,
                             dateTime: formatInventoryDateTime(item?.$createdAt),
+                            isActive:item.isActive,
                             action:
                             <>
                                 <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => showEditModal(item)}>Update Stock</Button>
@@ -96,6 +97,39 @@ const Inventory=()=>{
             setLoading(false);
         }
     };
+
+   function updateStockValueInTable(id, payload){
+    // debugger
+    const temp = inventoryData.map((item)=>{
+        if(item.id === id){
+            let newQuantity=0;
+            if(payload.type=="incoming"){
+                newQuantity = item.quantity+payload.quantity
+            }else if(payload.type=="outgoing"){
+                newQuantity = item.quantity-payload.quantity
+            }
+            let tempData={
+                key: item.id,
+                id:item.id,
+                associatedProduct:item.associatedProduct,
+                package:item.package,
+                quantity: newQuantity,
+                dateTime: formatInventoryDateTime(item.dateTime),
+                action:
+                <>
+                    <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => showEditModal(item)}>Update Stock</Button>
+                    {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                    <Switch checked={item.isActive}  onChange={(v) => handleInventoryActiveStatus(v, item.id)} />
+                </>
+            }
+            return tempData
+        }
+        else{
+            return item
+        }
+    })
+    setInventoryData(temp)
+   }
 
     return(
         <div style={{minWidth:'24cm'}}>
@@ -122,7 +156,7 @@ const Inventory=()=>{
                 footer={null}
             >
                 {isEditModalVisible ? (
-                    <UpdateStock editData={editData} onClose={handleCancel} />
+                    <UpdateStock editData={editData} onClose={handleCancel} onUpdate={(data, payload)=>{updateStockValueInTable(data, payload)}}/>
                 ) : (
                     <AddInventory onClose={handleCancel} />
                 )}
