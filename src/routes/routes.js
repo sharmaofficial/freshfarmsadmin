@@ -19,6 +19,7 @@ import Package from '../pages/package';
 import Categories from '../pages/Categories';
 import Orders from '../pages/Orders';
 import Packages from '../pages/Packages';
+import Notifications from '../pages/Notifications';
 
 const AppRoutes = () => {
   console.log("isAuthenticated()", isAuthenticated());
@@ -53,6 +54,7 @@ const AppRoutes = () => {
             <Route path="orders" element={<Orders/>} />
             {/* <Route path="ordersold" element={<Order/>} /> */}
             <Route path="packages" element={<Packages/>} />
+            <Route path="notifyUsers" element={<Notifications/>} />
             {/* <Route path="packagesold" element={<Package/>} /> */}
           </Route>
 
