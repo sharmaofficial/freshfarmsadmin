@@ -23,7 +23,7 @@ const Login = () => {
   const handleSendOtp = async () => {
     setLoading(true);
     try {
-        const response = await postApiCall('loginWithAppWrite', { email });
+        const response = await postApiCall('loginWithAppWrite', { email, isPortalLogin: true });
         const {status, message, data} = response.data;
         if (status) {
             messageApi.success(message);

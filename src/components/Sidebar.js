@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Layout, Menu, Popconfirm } from 'antd';
-import { DashboardOutlined, UserOutlined, SettingOutlined, LogoutOutlined, ProductOutlined,TruckOutlined , AppstoreAddOutlined, ShopOutlined, PercentageOutlined} from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, SettingOutlined,NotificationOutlined,LogoutOutlined, ProductOutlined,TruckOutlined , AppstoreAddOutlined, ShopOutlined, PercentageOutlined} from '@ant-design/icons';
 
 const { Sider } = Layout;
 
@@ -56,6 +56,9 @@ const Sidebar = ({collapsed, toggleCollapsed}) => {
         </Menu.Item> */}
         <Menu.Item key="12" icon={<PercentageOutlined />}>
           <Link to="/dashboard/packages">Packages</Link> {/* Correct link to /dashboard/settings */}
+        </Menu.Item>
+        <Menu.Item key="13" icon={<NotificationOutlined />}>
+          <Link to="/dashboard/notifyUsers">Notify Users</Link> {/* Correct link to /dashboard/settings */}
         </Menu.Item>
         {/* <Menu.Item key="13" icon={<SettingOutlined />}>
           <Link to="/dashboard/packagesold">Packages Old</Link>

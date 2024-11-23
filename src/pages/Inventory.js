@@ -3,8 +3,9 @@ import { Button, Drawer, Image, Form, Layout, List, Modal, Switch, Table, messag
 import { PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { formatOrderDateTime, getUserData,formatInventoryDateTime, getApiCall, formatInventoryDataForTable } from '../utils';
+import { formatOrderDateTime, getUserData,formatInventoryDateTime, getApiCall, formatInventoryDataForTable, postApiCall } from '../utils';
 import AddInventory from './AddInventory';
+import UpdateStock from './UpdateStock';
 
 
 const Inventory=()=>{
@@ -14,14 +15,46 @@ const Inventory=()=>{
     const [loading, setLoading] = useState(false);
     const [inventoryData, setInventoryData] = useState([]);
     const [columns, setColumns] = useState([]);
-    const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    // const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    const [isEditModalVisible, setIsEditModalVisible]= useState(false);
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [editData, setEditData] = useState(null)
     const showModal = () => setIsAddModalVisible(true);
-    const handleCancel = () => setIsAddModalVisible(false);
+    
+    const showEditModal=(data)=>{
+        setIsEditModalVisible(true)
+        setEditData(data);
+    }
+    const handleCancel = () => {
+        setIsAddModalVisible(false);
+         setIsEditModalVisible(false)
+    }
 
     useEffect(() => {
         getInventoryData();
     },[]);
+
+    async function handleInventoryActiveStatus(activeStatus, id){
+        // debugger
+        console.log(activeStatus);
+        const payload={
+            isActive:activeStatus,
+            inventoryId:id
+        }
+        try {
+            const response = await postApiCall('admin/updateInventoryStatus', payload, user.token);
+            const {data, message: msg, status} = response.data;
+            if(status){
+              message.success("Status update successful!!");
+              getInventoryData();
+            } else {
+             message.error("Status change failed!!")
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+        }
+        
+    }
     
     async function getInventoryData() {
         // debugger
@@ -44,11 +77,12 @@ const Inventory=()=>{
                             package:packageId.name,
                             quantity: item?.quantity,
                             dateTime: formatInventoryDateTime(item?.$createdAt),
+                            isActive:item.isActive,
                             action:
                             <>
-                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Edit</Button>
+                                <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => showEditModal(item)}>Update Stock</Button>
                                 {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
-                                {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} />*/}
+                                <Switch checked={item.isActive} onChange={(v) => handleInventoryActiveStatus(v, item.$id)} />
                             </>
                         }
                     });                
@@ -63,6 +97,39 @@ const Inventory=()=>{
             setLoading(false);
         }
     };
+
+   function updateStockValueInTable(id, payload){
+    // debugger
+    const temp = inventoryData.map((item)=>{
+        if(item.id === id){
+            let newQuantity=0;
+            if(payload.type=="incoming"){
+                newQuantity = item.quantity+payload.quantity
+            }else if(payload.type=="outgoing"){
+                newQuantity = item.quantity-payload.quantity
+            }
+            let tempData={
+                key: item.id,
+                id:item.id,
+                associatedProduct:item.associatedProduct,
+                package:item.package,
+                quantity: newQuantity,
+                dateTime: formatInventoryDateTime(item.dateTime),
+                action:
+                <>
+                    <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => showEditModal(item)}>Update Stock</Button>
+                    {/* <Button style={{backgroundColor:'#2ecc72', color:'#fff'}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
+                    <Switch checked={item.isActive}  onChange={(v) => handleInventoryActiveStatus(v, item.id)} />
+                </>
+            }
+            return tempData
+        }
+        else{
+            return item
+        }
+    })
+    setInventoryData(temp)
+   }
 
     return(
         <div style={{minWidth:'24cm'}}>
@@ -82,10 +149,18 @@ const Inventory=()=>{
         dataSource={inventoryData} 
         columns={columns}
         />
-
-      <Modal title="Add Inventory" open={isAddModalVisible} onCancel={handleCancel} footer={null}>
-        <AddInventory onClose={handleCancel} />
-      </Modal>
+        <Modal
+                title={isEditModalVisible ? "Update Stock" : "Add Inventory"}
+                open={isAddModalVisible || isEditModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                {isEditModalVisible ? (
+                    <UpdateStock editData={editData} onClose={handleCancel} onUpdate={(data, payload)=>{updateStockValueInTable(data, payload)}}/>
+                ) : (
+                    <AddInventory onClose={handleCancel} />
+                )}
+            </Modal>
 
         </div>
     ) 

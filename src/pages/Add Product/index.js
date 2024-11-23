@@ -33,20 +33,12 @@ import Title from 'antd/es/typography/Title';
 //     // onClick: handleMenuClick,
 //   };
 
-const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
+const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate, shops, productTypes}) => {
     
     const formRef = useRef();
     const [isEdit, setIsEdit] = useState(false);
-    const [shops, setShops] = useState([
-        {
-            key: `1`,
-            label: `Fresh Farms`
-        },
-        {
-            key: `2`,
-            label: `Shop 1`
-        },
-    ]);
+    const [shopList, setShops] = useState(shops);
+    const [productTypesList, setProductTypes] = useState(shops);
     const [isTouched, setIsTouched] = useState(false);
     const [items, setitems] = useState([])
     const [selectedCategory, setSelectedCategory] = useState({
@@ -54,6 +46,10 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         name: ""
     });
     const [selectedShop, setSelectedShop] = useState({
+        id: "",
+        name: ""
+    })
+    const [selectedProductType, setselectedProductType] = useState({
         id: "",
         name: ""
     })
@@ -143,6 +139,42 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
         setShops(updatedShops);
     },[categories, preFill]);
 
+    useEffect(() => {
+        let updatedShops = shops.map(item => {
+            if(isEdit){
+                if(item.$id === preFill.associated_shop.$id){
+                    setSelectedShop({
+                        id: item._id,
+                        name: item.name
+                    })
+                }
+            }
+            return{
+                key: item.$id,
+                label: item.name
+            }
+        });
+        setShops(updatedShops);
+    },[shops, preFill]);
+
+    useEffect(() => {
+        let updatedProductTypes = productTypes.map(item => {
+            if(isEdit){
+                if(item.$id === preFill.productType.$id){
+                    setselectedProductType({
+                        id: item.$id,
+                        name: item.name
+                    })
+                }
+            }
+            return{
+                key: item.$id,
+                label: item.name
+            }
+        });
+        setProductTypes(updatedProductTypes);
+    },[productTypes, preFill]);
+
     function handleMenuClick(e) {
         console.log(e.key);
         items.map(category => {
@@ -162,20 +194,35 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
     }
 
     function handleShopSelect(e) {
-        let label = shops[Number(e.keyPath[0]) - 1].label
-        let key = shops[Number(e.keyPath[0]) - 1].key;
-
-        setSelectedShop({
-            id: key,
-            name: label
+        shops.map(shop => {
+            if(shop.$id === e.key){
+                setSelectedShop({
+                    id: shop.key,
+                    name: shop.name
+                });
+            }
         });
         setFormaData(
             {
                 ...formData,
-                // shopName: label
-                associated_shop: "66c9a7ee003b7882be2c",
-                productType: "66c9a86d001f504c1886",
-                
+                associated_shop: e.key
+            }
+        )
+    }
+
+    function handleProductTypeSelect(e) {
+        productTypes.map(type => {
+            if(type.$id === e.key){
+                setselectedProductType({
+                    id: type.key,
+                    name: type.name
+                });
+            }
+        });
+        setFormaData(
+            {
+                ...formData,
+                productType: e.key
             }
         )
     }
@@ -235,13 +282,28 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate}) => {
             <div style={{marginBottom: 20}}>
                 <Dropdown
                     menu={{
-                        items: shops,
+                        items: shopList,
                         onClick: handleShopSelect
                     }}
                 >
                     <Button>
                         <Space>
                             {selectedShop.name || 'Select Shop Name'}
+                            <DownOutlined/>
+                        </Space>
+                    </Button>
+                </Dropdown>
+            </div>
+            <div style={{marginBottom: 20}}>
+                <Dropdown
+                    menu={{
+                        items: productTypesList,
+                        onClick: handleProductTypeSelect
+                    }}
+                >
+                    <Button>
+                        <Space>
+                            {selectedProductType.name || 'Select Product Type'}
                             <DownOutlined/>
                         </Space>
                     </Button>

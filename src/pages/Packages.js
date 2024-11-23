@@ -45,9 +45,9 @@ const Packages = () => {
                         weigth: Math.abs(Number(item.name)), //This logic needs to be changed. Numbers are coming as strings
                         action:
                         <>
-                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button>
+                            {/* <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button> */}
                             <Button danger style={{ marginRight: 10}} onClick={() => handleDeletePackage(item.$id)}>Delete</Button>
-                            {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item.$id)} /> */}
+                            <Switch checkedChildren="Active" unCheckedChildren="InActive" checked={item.isActive} onChange={(v) => handleEditPackage(v, item.$id)} />
                         </>
                     }));                
                     const {columns} = formatPackageDataForTable(data);
@@ -64,22 +64,15 @@ const Packages = () => {
 
     async function handleAddPackage(formData) {
         try {
-            if(parseInt(formData.name)<=0){
-                console.log("ERRORRRRR");  
-            }
-            else if(!formData){
-                alert("Enter")
-            }
-            else{
-
-            console.log(formData, 'formdata');
             const response = await postApiCall("admin/addPackage", formData, user.token);
-            const {data, message, status} = response.data;
+            const {data, message:msg, status} = response.data;
             console.log(response,"response");
             
             if(status){
-                messageApi.success(message);
-                getUsersList();
+                message.success(msg || "Package added successfully!!");
+                // getUsersList();
+                // debugger
+                addPackageToTable(data, formData);
                 setIsAddModalVisible(false)
                 setShowAddAlertSuccess(true)
                 
@@ -90,11 +83,27 @@ const Packages = () => {
                 showErrorAddFail(true)
                 // setIsAddModalVisible(false)
             }
-        }
         } catch (error) {
             console.log(error);
             messageApi.error(message)
             setErrorAddFail(true)
+        }
+    }
+
+    const addPackageToTable = (packageId, data) => {
+        if(packageId && data){
+            let temp = [...userList];
+            temp.push({
+                key: packageId,
+                id: packageId,
+                weigth: Math.abs(Number(data.name)),
+                action:
+                <>
+                    <Button danger style={{ marginRight: 10}} onClick={() => handleDeletePackage(packageId)}>Delete</Button>
+                    <Switch checkedChildren="Active" unCheckedChildren="InActive" checked={false} onChange={(v) => handleEditPackage(v, packageId)} />
+                </>
+            });
+            setUsersList(temp);
         }
     }
     function openEditForm(item){
@@ -106,22 +115,25 @@ const Packages = () => {
     }
 
 
-    async function handleEditPackage(editParams) {
+    async function handleEditPackage(editParams, id) {
         // editParams= {...editParams, $id:editPrefill.$id}
         console.log(editParams,"EDIT");
+        // editParams={...editParams, $id:id}
+        const payload={isActive:editParams, id:id}
+        // debugger
         // console.log(typeof editParams.isActive, "Type of isactive");
         
         try {
-            const response = await postApiCall("admin/editPackage", editParams, user.token, false);
-            const {data, message, status} = response.data;
+            const response = await postApiCall("admin/editPackage", payload, user.token, false);
+            const {data, message:msg, status} = response.data;
             console.log(data);
             console.log(message);
             if(status){
-                messageApi.success(message);
-                getUsersList();
+                message.success(msg.message||"Status Updated Successfully!");
+                // getUsersList();
 
             }else{
-                messageApi.error(message)
+                message.error(msg.message||"Status update failed!!")
             }
 
         } catch (error) {
@@ -141,25 +153,25 @@ const Packages = () => {
         // debugger
         try {
           const response = await postApiCall("admin/deletePackage", {id: packageId}, user.token, false);
-          const {data, message, status} = response.data;
+          const {data, message : msg, status} = response.data;
           console.log(data);
           console.log(message);
           if(status){
-              messageApi.success(message);
+              message.success(msg || "Package deleted Successfully");
               getUsersList();
           }else{
           console.log(message);
-              messageApi.error(message)
+              message.error(msg || "Error Deleting package!!")
           }
       } catch (error) {
           console.log(error);
-          messageApi.error(message)
+          message.error("Error Deleting package!!")
       }
     }
     
     return(
         <div style={{minWidth:'24cm'}}>
-        {
+        {/* {
             showAddAlertSuccess&& (
                 <Alert
                 message="Package Successfully added!"
@@ -180,7 +192,7 @@ const Packages = () => {
                 onClose={()=>setErrorAddFail(false)}
                 />
             )
-        }
+        } */}
        <h1>Packages</h1>
         <Button
         type="primary"

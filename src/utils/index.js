@@ -79,7 +79,7 @@ function formatUsersDataForTable(data) {
 }
 
 function formatOrdersDataForTable(data) {
-
+// debugger
   const columns = [
       {
         title: 'Order Id',
@@ -93,10 +93,10 @@ function formatOrdersDataForTable(data) {
         onFilter: (value, record) => {
           return record?.orderId?.includes(value)
         },
-        width: '70%',
+        width: '10%',
         render: (_, record) => {
           return (
-            <Paragraph copyable>{record.orderId}</Paragraph>
+            <Paragraph copyable ellipsis={{ rows: 1, expandable: true }}>{record.orderId}</Paragraph>
           )
         }
       },
@@ -111,6 +111,11 @@ function formatOrdersDataForTable(data) {
         filterSearch: true,
         onFilter: (value, record) => record.dateTime.includes(formatOrderDateTime(value)),
         width: '30%',
+        render: (_, record) => {
+          return (
+            <Paragraph ellipsis={{ rows: 1, expandable: true }}>{record.dateTime}</Paragraph>
+          )
+        }
       },
       {
         title: 'Delivery Address',
@@ -126,8 +131,8 @@ function formatOrdersDataForTable(data) {
         render: (_, record) => {
           return (
             <>
-              <Paragraph>Name: {record?.customerName}</Paragraph>
-              <Paragraph copyable>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
+              <Paragraph ellipsis={{ rows: 1, expandable: true }}>Name: {record?.customerName}</Paragraph>
+              <Paragraph copyable ellipsis={{ rows: 1, expandable: true }}>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
               <Paragraph ellipsis= {{rows:2, expandable:true}}copyable>{record?.address}</Paragraph>
             </>
           )
@@ -152,17 +157,17 @@ function formatOrdersDataForTable(data) {
               {
                 record?.status === 'Processing'
                 ?
-                <Paragraph style={{color:'orange', minWidth:'100px'}}>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }} style={{color:'orange', minWidth:'100px'}}>{record?.status}</Paragraph>
                 :
                 record?.status === 'Delivered'
                 ?
-                <Paragraph style={{color:'green'}}>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }} style={{color:'green'}}>{record?.status}</Paragraph>
                 :
                 record?.status === 'Cancelled'
                 ?
-                <Paragraph style={{color:'red'}}>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }} style={{color:'red'}}>{record?.status}</Paragraph>
                 :
-                <Paragraph>{record?.status}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: true }}>{record?.status}</Paragraph>
               }
             </div>
           )
@@ -177,6 +182,16 @@ function formatOrdersDataForTable(data) {
         title: 'Options',
         dataIndex: 'options',
         key: 'options',
+      },
+      {
+        title: 'Total Amount',
+        dataIndex: 'totalAmount',
+        key: 'totalAmount',
+      },
+      {
+        title: 'Payment Status',
+        dataIndex: 'isPaid',
+        key: 'isPaid',
       },
   ];
 
@@ -276,8 +291,6 @@ function formatCategoryDataForTable(data) {
 }
 
 function formatProductDataForTable(data) {
-  console.log(data);
-
   const columns = [
       {
         title: 'Image',
@@ -305,6 +318,7 @@ function formatProductDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record.description.includes(value),
+        width:"40%"
       },
       {
         title: 'Shop Name',
@@ -316,6 +330,18 @@ function formatProductDataForTable(data) {
         })),
         filterSearch: true,
         onFilter: (value, record) => record.shopName.includes(value),
+        width:'15%'
+      },
+      {
+        title: 'Category',
+        dataIndex: 'category',
+        key: 'category',
+      },
+      {
+        title: 'Price(/gm)',
+        dataIndex: 'price',
+        key: 'price',
+        width:'10%'
       },
       {
         title: 'Action',
@@ -487,6 +513,11 @@ function formatOrderDateTime(dateTime) {
 
 function formatInventoryDateTime(dateTime){
   if (dateTime) {
+    const desiredFormatRegex = /^[A-Za-z]+\s\d{1,2},\s\d{4}\sat\s\d{1,2}:\d{2}\s(?:AM|PM)$/;
+
+    if (desiredFormatRegex.test(dateTime)) {
+      return dateTime; // Return as is if already in the desired format
+    }
     const inputDate = new Date(dateTime);
     
     if (isNaN(inputDate.getTime())) {
@@ -540,7 +571,6 @@ const storeUserData = (data) => {
 };
 
 const getUserData = () => {
-  console.log("Called user data get")
   const encryptedData = localStorage.getItem('user');
   if (!encryptedData) return null;
   const bytes = CryptoJS.AES.decrypt(encryptedData, 'freshfarms');

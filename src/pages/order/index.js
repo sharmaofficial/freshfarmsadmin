@@ -258,7 +258,7 @@ const Order = () => {
                 customerName="John Doe"
                 email="john@example.com"
                 address="123 Main St, City"
-                products={selectedUserToEdit?.products}
+                products={selectedUserToEdit?.products || []}
             />
         </div>
 
