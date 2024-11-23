@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Select, Button, Input, Form, Typography, message } from "antd";
-import { getApiCall, getUserData } from "../utils";
+import { getApiCall, getUserData, postApiCall } from "../utils";
 
 const Notifications = () => {
   const [form] = Form.useForm();
@@ -32,7 +32,7 @@ const Notifications = () => {
           setUserOptions(combinedData.filter((item) => item.value)); 
         }
         else{
-            message.error(msg||"Error in fetching users!!")
+          message.error(msg||"Error in fetching users!!")
         }
       }
     } catch (error) {
@@ -50,8 +50,20 @@ const Notifications = () => {
     form.setFieldsValue({ userIds: allTokens });
   };
 
-  const handleFormSubmit = (values) => {
-    console.log("Notification Data:", values);
+  const handleFormSubmit = async(values) => {
+    try {
+      if (user) {
+        const response = await postApiCall("admin/sendNotifications", values, user.token);
+        const { data, message: msg, status } = response.data;
+        if (status) {
+          message.success(msg)
+        } else {
+          message.error(msg)
+        }
+      }
+    } catch (error) {
+      message.error(error.message)
+    }
   };
 
   return (
@@ -62,7 +74,7 @@ const Notifications = () => {
 
       <Form form={form} onFinish={handleFormSubmit} layout="vertical">
         <Form.Item
-          name="userIds"
+          name="tokenList"
           label="Select Users"
           rules={[{ required: true, message: "Please select users!" }]}
         >
@@ -80,7 +92,7 @@ const Notifications = () => {
         </Button>
 
         <Form.Item
-          name="heading"
+          name="notificationTitle"
           label="Notification Heading"
           rules={[{ required: true, message: "Please enter a heading!" }]}
         >
@@ -88,7 +100,7 @@ const Notifications = () => {
         </Form.Item>
 
         <Form.Item
-          name="body"
+          name="notificationBody"
           label="Notification Body"
           rules={[{ required: true, message: "Please enter a body!" }]}
         >
