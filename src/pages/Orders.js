@@ -21,6 +21,7 @@ const Orders = () => {
     const [visible, setVisible] = useState(false);
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const [orderBillData, setOrderBillData] = useState(null);
+    const [printBill, setPrintBill] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [showModal, setShowModal]= useState(false);
     const [editData,setEditData]=useState({});
@@ -36,25 +37,44 @@ const Orders = () => {
         console.log("handleCancelOrderConfirm");    
     }
 
-    function handleGeneratePDF(id) {
-        const billElement = document.querySelector('#bill');
-        html2canvas(billElement, {
-            scale: 2, 
-        }).then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdfWidth = canvas.width * 0.264583;
-            const pdfHeight = canvas.height * 0.264583;
+    function handleGeneratePDF(order) {
+        const id = order?.orderId.$id
+        setOrderBillData({
+            shopName: "Tiger Hills Agro",
+            billNo: order.orderId?.$id,
+            date: formatInventoryDateTime(order.orderId?.$createdAt),
+            customerName: order.orderId?.deliveryAddress?.name,
+            email: order.orderId?.deliveryAddress?.contactNumber,
+            address: order.orderId?.deliveryAddress?.address,
+            products: order ? JSON.parse(order.orderId?.products) : [],
+            totalAmount: order.orderId?.totalAmout,
+        })
+        setPrintBill(true);
+        setTimeout(() => {
+            const billElement = document.querySelector('#bill');
+            if (!billElement) {
+                console.error("Bill element not found");
+                return;
+            }
     
-            const pdf = new jsPDF(pdfWidth > pdfHeight ? 'landscape' : 'portrait', 'mm', [pdfWidth, pdfHeight]);
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Order - ${id || ''}.pdf`);
-        }).catch((error) => {
-            console.error("Error generating PDF:", error);
-        });
+            html2canvas(billElement, { scale: 2 })
+                .then((canvas) => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdfWidth = canvas.width * 0.264583;
+                    const pdfHeight = canvas.height * 0.264583;
+    
+                    const pdf = new jsPDF(pdfWidth > pdfHeight ? 'landscape' : 'portrait', 'mm', [pdfWidth, pdfHeight]);
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    pdf.save(`Order - ${id}.pdf`);
+                })
+                .catch((error) => {
+                    console.error("Error generating PDF:", error);
+                });
+        }, 100);
     }
-    const handleCategoryStateChange = () => {
-        console.log("handleCancelOrderConfirm");    
-    }
+    // const handleCategoryStateChange = () => {
+    //     console.log("handleCancelOrderConfirm");    
+    // }
 
     async function getUsersList() {
         setLoading(true);
@@ -63,6 +83,7 @@ const Orders = () => {
             if(user){
                 const response = await getApiCall("admin/getOrders", user.token);
                 const {data, status, message} = response.data;
+                
                 if(status){
                     const transformedArray = data.map((item, index) => {
                         console.log("item", item);
@@ -85,7 +106,7 @@ const Orders = () => {
                             ,
                             options:
                             <div style={{display:'flex', flexDirection:'row'}}>
-                                 <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item); handleGeneratePDF(item.orderId.orderId)}}>Generate Bill</Button>
+                                 <Button style={{marginRight: 10}} onClick={() =>{handleGeneratePDF(item)}}>Generate Bill</Button>
                                  {/* <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                                 {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                             </div>
@@ -179,16 +200,16 @@ const Orders = () => {
         />
          {/* Bill to print */}
          <div  style={{position: 'absolute', left: '-9999px',}} id='bill'>
-            <BillFormat
-                shopName="Tiger Hills Agro"
-                billNo={selectedUserToEdit?.orderId?.$id}
-                date={formatInventoryDateTime(selectedUserToEdit?.orderId?.$createdAt)}
-                customerName={selectedUserToEdit?.orderId?.deliveryAddress?.name}
-                email={selectedUserToEdit?.orderId?.deliveryAddress?.contactNumber}
-                address={selectedUserToEdit?.orderId?.deliveryAddress?.address}
-                products={selectedUserToEdit ? JSON.parse(selectedUserToEdit?.orderId?.products) : []}
-                totalAmount={selectedUserToEdit?.orderId?.totalAmout}
-            />
+            {printBill&&<BillFormat
+                  shopName={orderBillData?.shopName}
+                  billNo={orderBillData?.billNo}
+                  date={orderBillData?.date}
+                  customerName={orderBillData?.customerName}
+                  email={orderBillData?.email}
+                  address={orderBillData?.address}
+                  products={orderBillData?.products}
+                  totalAmount={orderBillData?.totalAmount}
+            />}
         </div>
         <Modal
             title={editingProduct ? 'Edit Product' : 'Add Order'}
