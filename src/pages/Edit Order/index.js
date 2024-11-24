@@ -7,10 +7,14 @@ const { Text, Paragraph } = Typography;
 const EditOrder = ({ data, successCallback, errorCallback }) => {
     const [loading, setLoading] = useState(false);
     const [selectedOrderStatus, setSelectedOrderStatus] = useState('');
+    const [showProductDetails, setShowProductDetails] = useState(false)
     const [form] = Form.useForm(); 
     const userData = getUserData();
+    const products = JSON.parse(data?.orderId?.products)
+
     // debugger
     useEffect(() => {
+        setShowProductDetails(true);
         const initialData = {
             // ...data,
             // products: typeof data.products === "string" ? JSON.parse(data.products) : data.products,
@@ -36,6 +40,7 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
                 userData.token
             );
             const { data, status, message } = response.data;
+            
             setLoading(false);
             if (status) {
                 form.resetFields();
@@ -63,15 +68,15 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
             </Row>
             <Row style={{ marginTop: 8 }}>
                 <Text strong>Order Date: </Text>
-                <Text  style={{ marginLeft: 8 }}>{formatInventoryDateTime(data.dateTime)}</Text>
+                <Text  style={{ marginLeft: 8 }}>{formatInventoryDateTime(data.orderId.dateTime)}</Text>
             </Row>
-            {/* {data.products.map((product, index) => (
+            {showProductDetails ? products.map((product, index) => (
                 <div key={index} style={{marginTop:'16px'}}>
                     <Text><strong>Product Name:</strong> {product?.name}</Text>
                     <br />
                     <Text><strong>Quantity:</strong>{product?.packageType?.name}gm * {product?.quantity}</Text>
                 </div>
-            ))} */}
+            )): null}
              </Form.Item>
 
             <Form.Item

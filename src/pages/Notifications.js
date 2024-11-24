@@ -47,7 +47,7 @@ const Notifications = () => {
   const handleSelectAll = () => {
     const allTokens = userOptions.map((option) => option.value);
     setSelectedUsers(allTokens);
-    form.setFieldsValue({ userIds: allTokens });
+    form.setFieldsValue({ tokenList: allTokens });
   };
 
   const handleFormSubmit = async(values) => {
@@ -55,7 +55,7 @@ const Notifications = () => {
       if (user) {
         const response = await postApiCall("admin/sendNotifications", values, user.token);
         const { data, message: msg, status } = response.data;
-        if (status) {
+        if (status) {   
           message.success(msg)
         } else {
           message.error(msg)

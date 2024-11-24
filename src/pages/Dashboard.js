@@ -56,7 +56,7 @@ const Dashboard = () => {
         {/* Content */}
         <Content style={{ margin: '16px', padding: '24px', background: '#fff', minHeight: 280 }}>
           <Outlet /> {/* This renders the selected page content */}
-          {location.pathname == '/dashboard' && <Graph/>}
+          {/* {location.pathname == '/dashboard' && <Graph/>} */}
           {/* <Graph/> */}
         </Content>  
 

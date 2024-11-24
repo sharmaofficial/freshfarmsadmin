@@ -1,11 +1,13 @@
-import { Space } from "antd";
+import { Space, Typography } from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import axios from "axios";
 
 import CryptoJS from 'crypto-js';
 //const BASE_URL = `http://localhost:8080/`
- const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
+const BASE_URL = `http://api.freshfarmsajmer.online:8080/`
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWJjOGYyZmRkNjE2NDFiYTBhZGQ0YWUiLCJpYXQiOjE3MDcwNDM2MTN9.UcrRo0FmgcWUjFY5sP-ORE6BcjIB_IeddzP-WDNujsU`
+
+const {Text, Link } = Typography;
 
 const postApiCall = async(path, params, token, isFormData) => {
   // debugger
@@ -131,8 +133,12 @@ function formatOrdersDataForTable(data) {
         render: (_, record) => {
           return (
             <>
-              <Paragraph ellipsis={{ rows: 1, expandable: true }}>Name: {record?.customerName}</Paragraph>
-              <Paragraph copyable ellipsis={{ rows: 1, expandable: true }}>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph>
+              <Paragraph  ellipsis={{ rows: 1, expandable: true }}><span>Name: </span> <Text copyable>{record?.customerName}</Text></Paragraph>
+              {/* <Paragraph copyable ellipsis={{ rows: 1, expandable: true }}>Mobile: <a href={`tel:${record?.contact}`}>{record?.contact}</a></Paragraph> */}
+              <Paragraph ellipsis={{ rows: 1, expandable: true }}>
+                  <span>Mobile: </span>
+                  <Link copyable href={`tel:${record?.contact}`}>{record?.contact}</Link>
+              </Paragraph>
               <Paragraph ellipsis= {{rows:2, expandable:true}}copyable>{record?.address}</Paragraph>
             </>
           )

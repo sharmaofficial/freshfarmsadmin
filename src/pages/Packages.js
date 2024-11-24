@@ -46,7 +46,7 @@ const Packages = () => {
                         action:
                         <>
                             {/* <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => openEditForm(item)}>Edit</Button> */}
-                            <Button danger style={{ marginRight: 10}} onClick={() => handleDeletePackage(item.$id)}>Delete</Button>
+                            {/* <Button danger style={{ marginRight: 10}} onClick={() => handleDeletePackage(item.$id)}>Delete</Button> */}
                             <Switch checkedChildren="Active" unCheckedChildren="InActive" checked={item.isActive} onChange={(v) => handleEditPackage(v, item.$id)} />
                         </>
                     }));                
@@ -106,13 +106,13 @@ const Packages = () => {
             setUsersList(temp);
         }
     }
-    function openEditForm(item){
-        setIsEditModalVisible(true)
-        setEditPrefill({
-            name:item.name,
-            id:item.$id
-        })
-    }
+    // function openEditForm(item){
+    //     setIsEditModalVisible(true)
+    //     setEditPrefill({
+    //         name:item.name,
+    //         id:item.$id
+    //     })
+    // }
 
 
     async function handleEditPackage(editParams, id) {
@@ -130,7 +130,7 @@ const Packages = () => {
             console.log(message);
             if(status){
                 message.success(msg.message||"Status Updated Successfully!");
-                // getUsersList();
+                getUsersList();
 
             }else{
                 message.error(msg.message||"Status update failed!!")
