@@ -22,8 +22,9 @@ const Orders = () => {
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const [orderBillData, setOrderBillData] = useState(null);
     const [printBill, setPrintBill] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = message.useMessage([{}]);
     const [showModal, setShowModal]= useState(false);
+    const [productsForOrderEdit,setProductsForOrderEdit]=useState()
     const [editData,setEditData]=useState({});
 
     const [form] = Form.useForm();
@@ -132,7 +133,9 @@ const Orders = () => {
     }
 
     function openEditOrder(data){
+        // debugger
         setEditData(data)
+        setProductsForOrderEdit(JSON.parse(data.orderId.products))
         setIsEditModalVisible(true)
     }
 
@@ -140,6 +143,7 @@ const Orders = () => {
         try {            
             setIsEditModalVisible(false);
             messageApi.success(msg);
+            // debugger
             const temp = userList.map(item => {
                 if(item.orderId === id){
                     console.log("element", item);
@@ -223,6 +227,7 @@ const Orders = () => {
         >
             <EditOrder
                 data={editData} 
+                products={productsForOrderEdit}
                 successCallback={(message, id, status) => editSuccessCallback(message, id, status)} 
                 errorCallback={(Error)=> editErrorCallback(Error)}
             />

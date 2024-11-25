@@ -4,17 +4,18 @@ import { useEffect, useState } from "react";
 
 const { Text, Paragraph } = Typography;
 
-const EditOrder = ({ data, successCallback, errorCallback }) => {
+const EditOrder = ({ data,products, successCallback, errorCallback }) => {
     const [loading, setLoading] = useState(false);
     const [selectedOrderStatus, setSelectedOrderStatus] = useState('');
     const [showProductDetails, setShowProductDetails] = useState(false)
     const [form] = Form.useForm(); 
     const userData = getUserData();
-    const products = JSON.parse(data?.orderId?.products)
+    // const products = JSON.parse(data?.orderId?.products)
 
     // debugger
     useEffect(() => {
         setShowProductDetails(true);
+        // debugger
         const initialData = {
             // ...data,
             // products: typeof data.products === "string" ? JSON.parse(data.products) : data.products,
@@ -27,10 +28,11 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
             orderId: typeof data.orderId === 'object' ? data.orderId.$id : data.orderId
         };
         form.setFieldsValue(initialData); 
-        setSelectedOrderStatus(data.orderStatus)
+        setSelectedOrderStatus(data.status)
     }, [data, form]); 
 
     const updateOrder = async (values) => {
+        // debugger
         setLoading(true);
         // debugger
         try {
@@ -39,18 +41,21 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
                 { status: values.orderStatus, id: values.orderId },
                 userData.token
             );
-            const { data, status, message } = response.data;
+            const { data, status, message: msg } = response.data;
             
             setLoading(false);
             if (status) {
                 form.resetFields();
                 successCallback(message, values.orderId, values.orderStatus);
+                message.success(msg || "Order Updated successfully!")
             } else {
                 errorCallback(message);
+                message.error(msg || "Error updating Order,try again!")
             }
         } catch (error) {
             setLoading(false);
             errorCallback(error.message);
+            message.error( "Error updating Order,try again!")
         }
     };
 
@@ -64,8 +69,10 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
         <Form.Item name='orderId' style={{marginTop:'27px'}}>
             <Row>
                 <Text strong>Order Id: </Text>
-                <Text copyable style={{ marginLeft: 8 }}>{data?.$id || data.orderId}</Text>
+                <Text copyable style={{ marginLeft: 8 }}>{data?.orderId?.$id }</Text>
+                {/* || initialData.orderId */}
             </Row>
+        </Form.Item>
             <Row style={{ marginTop: 8 }}>
                 <Text strong>Order Date: </Text>
                 <Text  style={{ marginLeft: 8 }}>{formatInventoryDateTime(data.orderId.dateTime)}</Text>
@@ -77,7 +84,6 @@ const EditOrder = ({ data, successCallback, errorCallback }) => {
                     <Text><strong>Quantity:</strong>{product?.packageType?.name}gm * {product?.quantity}</Text>
                 </div>
             )): null}
-             </Form.Item>
 
             <Form.Item
                 style={{marginTop:'20px'}}
