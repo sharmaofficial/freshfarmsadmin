@@ -100,7 +100,7 @@ const BillFormat = ({ shopName, billNo, date, customerName, email, address, prod
 
       {/* Footer */}
       <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <p style={{ fontWeight: "bold", margin: "0" }}>Thank you for your business!</p>
+        <p style={{ fontWeight: "bold", margin: "0" }}>Thank you for your Business!</p>
       </div>
     </div>
   )
