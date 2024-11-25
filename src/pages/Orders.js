@@ -139,7 +139,7 @@ const Orders = () => {
         setIsEditModalVisible(true)
     }
 
-    function editSuccessCallback(msg, id, status) {
+    function editSuccessCallback(data,msg, id, status) {
         try {            
             setIsEditModalVisible(false);
             messageApi.success(msg);
@@ -161,13 +161,13 @@ const Orders = () => {
                         // orderStatus:item.orderId.orderStatus
                         action:
                         <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
-                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(payload); setShowModal(true)}}>Edit</Button>
+                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(data); setShowModal(true)}}>Edit</Button>
                             {/* <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button> */}
                         </div>
                         ,
                         options:
                         <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
-                             <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item.orderId.products); handleGeneratePDF(item.orderId.orderId)}}>Generate Bill</Button>
+                             <Button style={{marginRight: 10}} onClick={() =>{ handleGeneratePDF(data)}}>Generate Bill</Button>
                              {/* <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                             {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                         </div>
@@ -228,7 +228,7 @@ const Orders = () => {
             <EditOrder
                 data={editData} 
                 products={productsForOrderEdit}
-                successCallback={(message, id, status) => editSuccessCallback(message, id, status)} 
+                successCallback={(data,message, id, status) => editSuccessCallback(data,message, id, status)} 
                 errorCallback={(Error)=> editErrorCallback(Error)}
             />
         </Modal>

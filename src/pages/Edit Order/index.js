@@ -10,6 +10,7 @@ const EditOrder = ({ data,products, successCallback, errorCallback }) => {
     const [showProductDetails, setShowProductDetails] = useState(false)
     const [form] = Form.useForm(); 
     const userData = getUserData();
+    const callbackData = data;
     // const products = JSON.parse(data?.orderId?.products)
 
     // debugger
@@ -44,9 +45,10 @@ const EditOrder = ({ data,products, successCallback, errorCallback }) => {
             const { data, status, message: msg } = response.data;
             
             setLoading(false);
+            // debugger
             if (status) {
                 form.resetFields();
-                successCallback(message, values.orderId, values.orderStatus);
+                successCallback(callbackData,message, values.orderId, values.orderStatus);
                 message.success(msg || "Order Updated successfully!")
             } else {
                 errorCallback(message);
@@ -61,10 +63,16 @@ const EditOrder = ({ data,products, successCallback, errorCallback }) => {
 
     return (
         <Form
-            form={form} // Connect the form instance
+            form={form}
             name="editOrder"
             layout="vertical"
-            onFinish={updateOrder}
+            onFinish={(values) => {
+                const updatedValues = {
+                    ...values,
+                    orderId: data?.orderId?.$id,
+                    orderStatus: values.orderStatus || selectedOrderStatus,
+                };
+                updateOrder(updatedValues);}}
         >
         <Form.Item name='orderId' style={{marginTop:'27px'}}>
             <Row>
@@ -102,6 +110,7 @@ const EditOrder = ({ data,products, successCallback, errorCallback }) => {
                         { value: "Cancelled", label: "Cancelled" },
                     ]}
                     disabled={data?.orderStatus === "Cancelled"}
+                    // onChange={(e)=>{setSelectedOrderStatus(e)}}
                     value={selectedOrderStatus}
                 />
             </Form.Item>
