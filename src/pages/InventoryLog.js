@@ -48,7 +48,7 @@ const InventoryLog = () => {
                         return {
                             key: item?.id,
                             // id: item?.id,
-                            orderId: item?.$id,
+                            logId: item?.$id,
                             orderType: item?.orderType,
                             dateTime: formatInventoryDateTime(item?.createdAt),
                             action:
