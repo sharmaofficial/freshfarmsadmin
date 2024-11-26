@@ -161,7 +161,7 @@ const Orders = () => {
                         // orderStatus:item.orderId.orderStatus
                         action:
                         <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
-                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(data); setShowModal(true)}}>Edit</Button>
+                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder({...data, status: status}); setShowModal(true)}}>Edit</Button>
                             {/* <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button> */}
                         </div>
                         ,
