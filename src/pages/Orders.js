@@ -22,8 +22,9 @@ const Orders = () => {
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const [orderBillData, setOrderBillData] = useState(null);
     const [printBill, setPrintBill] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = message.useMessage([{}]);
     const [showModal, setShowModal]= useState(false);
+    const [productsForOrderEdit,setProductsForOrderEdit]=useState()
     const [editData,setEditData]=useState({});
 
     const [form] = Form.useForm();
@@ -132,14 +133,17 @@ const Orders = () => {
     }
 
     function openEditOrder(data){
+        // debugger
         setEditData(data)
+        setProductsForOrderEdit(JSON.parse(data.orderId.products))
         setIsEditModalVisible(true)
     }
 
-    function editSuccessCallback(msg, id, status) {
+    function editSuccessCallback(data,msg, id, status) {
         try {            
             setIsEditModalVisible(false);
             messageApi.success(msg);
+            // debugger
             const temp = userList.map(item => {
                 if(item.orderId === id){
                     console.log("element", item);
@@ -157,13 +161,13 @@ const Orders = () => {
                         // orderStatus:item.orderId.orderStatus
                         action:
                         <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
-                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder(payload); setShowModal(true)}}>Edit</Button>
+                            <Button color="primary" variant="outlined" style={{ marginRight: 10}} onClick={() => {openEditOrder({...data, status: status}); setShowModal(true)}}>Edit</Button>
                             {/* <Button danger style={{ marginRight: 10}} onClick={() =>{ handleCancelOrderConfirm(item.$id)}}>Cancel</Button> */}
                         </div>
                         ,
                         options:
                         <div key={item.$id} style={{display:'flex', flexDirection:'row'}}>
-                             <Button style={{marginRight: 10}} onClick={() =>{setSelectedUserToEdit(item.orderId.products); handleGeneratePDF(item.orderId.orderId)}}>Generate Bill</Button>
+                             <Button style={{marginRight: 10}} onClick={() =>{ handleGeneratePDF(data)}}>Generate Bill</Button>
                              {/* <Button danger style={{marginRight: 10}} onClick={() => setSelectedUserToEdit(item)}>Delete</Button> */}
                             {/* <Switch checked={item.isActive} onChange={(v) => handleCategoryStateChange(v, item._id)} /> */}
                         </div>
@@ -223,7 +227,8 @@ const Orders = () => {
         >
             <EditOrder
                 data={editData} 
-                successCallback={(message, id, status) => editSuccessCallback(message, id, status)} 
+                products={productsForOrderEdit}
+                successCallback={(data,message, id, status) => editSuccessCallback(data,message, id, status)} 
                 errorCallback={(Error)=> editErrorCallback(Error)}
             />
         </Modal>
