@@ -58,8 +58,8 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate, shops, p
         // coverImage: null,
         // categoryId: "",
         category:"",
-        associated_shop:"66c9a7ee003b7882be2c",
-        productType: "66c9a86d001f504c1886",
+        associated_shop:"",
+        productType: "",
         // shopName: "",
         image:{},
         // image:{
@@ -374,7 +374,9 @@ const AddProduct = ({onSubmit, categories, preFill, formName, onUpdate, shops, p
                     null
                 } */}
                 <Form.Item style={{display:'flex', justifyContent:'end'}}>
-                    <Button onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}} style={{background:'#1677ff', color:"#fff"}}>
+                    <Button 
+                    disabled={formData.name=="" || formData.description=="" || formData.estimated_delivery==""|| formData.price==""}
+                    onClick={() => {isEdit ? onUpdate(formData) : onSubmit(formData)}} style={{background:'#1677ff', color:"#fff"}}>
                         Submit
                     </Button>
                 </Form.Item>

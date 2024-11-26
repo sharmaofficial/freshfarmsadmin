@@ -109,7 +109,7 @@ const EditOrder = ({ data,products, successCallback, errorCallback }) => {
                         { value: "Delivered", label: "Delivered" },
                         { value: "Cancelled", label: "Cancelled" },
                     ]}
-                    disabled={data?.orderStatus === "Cancelled"}
+                    disabled={data?.status == "Cancelled"}
                     // onChange={(e)=>{setSelectedOrderStatus(e)}}
                     value={selectedOrderStatus}
                 />
@@ -170,7 +170,7 @@ const EditOrder = ({ data,products, successCallback, errorCallback }) => {
             </Form.Item> */}
 
             <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading}>
+                <Button disabled={data?.status == "Cancelled"} type="primary" htmlType="submit" loading={loading}>
                     Update
                 </Button>
             </Form.Item>
