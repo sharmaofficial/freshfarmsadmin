@@ -44,7 +44,7 @@ const Dashboard = () => {
             style={{ fontSize: '16px' }}
           />
           <div>
-            <h1>Fresh Farms</h1>
+            <h1>Tiger Hills Agro</h1>
           </div>
           {/* You can add user information or logout button here */}
           <div>
