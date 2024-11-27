@@ -142,8 +142,8 @@ const Products = () => {
             if(status){
                 setIsAddModalVisible(false);
                 messageApi.success(message);
-                addProductToTable(data.id, data.imageUrl, formData);
-                // getUsersList();
+                // addProductToTable(data.id, data.imageUrl, formData);
+                getUsersList();
 
                 // addProductToTable(data, formData)
                 //TODO: Api return the updated data row, use this instead of calling the api again
