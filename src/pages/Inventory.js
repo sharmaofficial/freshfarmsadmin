@@ -168,6 +168,10 @@ const Inventory = () => {
     formatData({documents: updatedInventoryList})
   }
 
+  function addInventoryToTable(newId, dataToUpdate){
+
+  }
+
   return (
     <div style={{ minWidth: "24cm" }}>
       <h1>Inventory</h1>
@@ -201,7 +205,7 @@ const Inventory = () => {
             }}
           />
         ) : (
-          <AddInventory onClose={handleCancel} />
+          <AddInventory onClose={handleCancel} onUpdate={getInventoryData}/>
         )}
       </Modal>
     </div>

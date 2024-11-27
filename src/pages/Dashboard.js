@@ -62,7 +62,8 @@ const Dashboard = () => {
 
         {/* Footer */}
         <Footer style={{ textAlign: 'center' }}>
-          E-Commerce Admin Dashboard ©2024 Created by YourCompany
+          {/* E-Commerce Admin Dashboard ©2024 Created by YourCompany */}
+          Tiger Hills Agro©2024 
         </Footer>
       </Layout>
     </Layout>

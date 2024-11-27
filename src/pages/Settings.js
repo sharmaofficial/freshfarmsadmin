@@ -64,21 +64,21 @@ const Settings = () => {
     <div style={{minWidth:'24cm'}}>
       <h1>Settings</h1>
       <Form form={form} layout="vertical" onFinish={handleSave}>
-        <Form.Item
+        {/* <Form.Item
           label="Website Title"
           name="websiteTitle"
           rules={[{ required: true, message: 'Please enter the website title' }]}
         >
           <Input placeholder="Enter website title" />
-        </Form.Item>
+        </Form.Item> */}
         
-        <Form.Item
+        {/* <Form.Item
           label="Admin Email"
           name="adminEmail"
           rules={[{ required: true, message: 'Please enter the admin email' }]}
         >
           <Input placeholder="Enter admin email" />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           label="Switch to maintenance"
           name={"Switch to maintenance"}

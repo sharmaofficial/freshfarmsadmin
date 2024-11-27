@@ -6,7 +6,7 @@ import { getApiCall, getUserData, postApiCall } from '../utils';
 
 const { Option } = Select;
 
-const AddInventory = ({ onClose }, ref) => {
+const AddInventory = ({ onClose, onUpdate}, ref) => {
   const [form] = Form.useForm();
   const [products, setProducts] = useState([]);
   const [packageQuantities, setPackageQuantities] = useState([]);
@@ -39,7 +39,6 @@ async function getDataForAddInventory() {
 
   const handleSubmit = async values => {
     try {
-
         const updatedAt = new Date().toISOString();
         const dataToSubmit = { 
             ...values, 
@@ -49,15 +48,17 @@ async function getDataForAddInventory() {
       const response = await postApiCall('admin/createInventoryForProduct', dataToSubmit, user.token);
       const {data, message: msg, status} = response.data;
       if(status){
-        message.success(msg);
+        message.success(msg || "Inventory created successfully!!");
         form.resetFields();
         onClose();
-        getDataForAddInventory();
+        onUpdate()
+        // getDataForAddInventory();
       } else {
-        message.error(typeof msg === 'string' ? msg : msg.error);
+        message.error(msg.error || "Error creating new Inventory, please try again!");
       }
     } catch (error) {
       console.error("Submission error:", error);
+      message.error( "Error creating new Inventory, please try again!")
     }
   };
 
