@@ -404,6 +404,17 @@ function formatLogsDataForTable(data) {
       //   key: 'id',
       // },
       {
+        title: 'Inventory Log Id',
+        dataIndex: 'logId',
+        key: 'logId',
+        filters: data.map(item => ({
+          text: item.$id,
+          value: item.$id,
+        })),
+        filterSearch: true,
+        onFilter: (value, record) => record.logId.includes(value),
+      },
+      {
         title: 'Order Id',
         dataIndex: 'orderId',
         key: 'orderId',

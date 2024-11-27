@@ -44,7 +44,7 @@ const Dashboard = () => {
             style={{ fontSize: '16px' }}
           />
           <div>
-            <h1>Fresh Farms</h1>
+            <h1>Tiger Hills Agro</h1>
           </div>
           {/* You can add user information or logout button here */}
           <div>
@@ -62,7 +62,8 @@ const Dashboard = () => {
 
         {/* Footer */}
         <Footer style={{ textAlign: 'center' }}>
-          E-Commerce Admin Dashboard ©2024 Created by YourCompany
+          {/* E-Commerce Admin Dashboard ©2024 Created by YourCompany */}
+          Tiger Hills Agro©2024 
         </Footer>
       </Layout>
     </Layout>
