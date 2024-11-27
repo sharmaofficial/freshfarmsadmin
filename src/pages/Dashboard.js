@@ -54,7 +54,7 @@ const Dashboard = () => {
         </Header>
 
         {/* Content */}
-        <Content style={{ margin: '16px', padding: '24px', background: '#fff', minHeight: 280 }}>
+        <Content style={{minWidth:'24cm' ,margin: '16px', padding: '24px', background: '#fff', minHeight: 280 }}>
           <Outlet /> {/* This renders the selected page content */}
           {/* {location.pathname == '/dashboard' && <Graph/>} */}
           {/* <Graph/> */}
