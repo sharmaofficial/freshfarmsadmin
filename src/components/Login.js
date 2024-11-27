@@ -11,7 +11,7 @@ import useLocalStorage from '../utils/localStorageHook';
 const { Title, Text } = Typography;
 
 const Login = () => {
-  const [email, setEmail] = useState('sharma.official12@gmail.com');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);

@@ -70,19 +70,19 @@ const Users = () => {
         />
       ),
     },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (text, record) => (
-        <div>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: 8 }}
-          />
-        </div>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   key: 'actions',
+    //   render: (text, record) => (
+    //     <div>
+    //       <Button
+    //         icon={<EditOutlined />}
+    //         onClick={() => handleEdit(record)}
+    //         style={{ marginRight: 8 }}
+    //       />
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleStatusToggle = async(status, userId) => {
@@ -168,14 +168,14 @@ const Users = () => {
   return (
     <div>
       <h1>Users Management</h1>
-      <Button
+      {/* <Button
         type="primary"
         icon={<PlusOutlined />}
         onClick={showAddUserModal}
         style={{ marginBottom: 16 }}
       >
         Add User
-      </Button>
+      </Button> */}
       <Table loading={loading} dataSource={users} columns={columns} pagination={false} />
 
       {/* Modal for editing and adding user */}
